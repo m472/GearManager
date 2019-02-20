@@ -24,6 +24,24 @@ class PackingListForm(ModelForm):
         model = PackingList
         fields = ['name', 'comment', 'destination', 'tripStart', 'tripEnd']
 
+class PackingListWeights:
+    def __init__(self, relations):
+        self.currentMinWeight = 0
+        self.currentMaxWeight = 0
+        self.totalMinWeight = 0
+        self.totalMaxWeight = 0
+
+        for rel in relations:
+            minW = rel.count * rel.item.minWeight
+            maxW = rel.count * (rel.item.maxWeight or rel.item.minWeight)
+
+            self.totalMinWeight += minW
+            self.totalMaxWeight += maxW
+            
+            if rel.isPacked:
+                self.currentMinWeight += minW
+                self.currentMaxWeight += maxW
+
 class GearItemDetailView(DetailView):
     model = GearItem
     context_object_name = 'item'
@@ -109,7 +127,9 @@ class PackingListDetailView(LoginRequiredMixin, DetailView):
         context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id) \
                                                    .exclude(packinglistgearitemrelation__packinglist_id = self.object.id)
         context['groups'] = GearItemGroup.objects.filter(gearitemgroupownership__owner_id = self.request.user.id) 
-        context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
+        relations = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
+        context['relations'] = relations
+        context['weights'] = PackingListWeights(relations)
         return context
 
 @login_required
