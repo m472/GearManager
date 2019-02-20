@@ -26,7 +26,7 @@ class GearItemDetailView(DetailView):
     model = GearItem
     context_object_name = 'item'
 
-class GearItemCreateView(CreateView):
+class GearItemCreateView(LoginRequiredMixin, CreateView):
     model = GearItem
     form_class = GearItemForm
     success_url = reverse_lazy('listPersonalItems')
@@ -39,7 +39,7 @@ class GearItemCreateView(CreateView):
 
         return redirect(self.get_success_url())
 
-class GearItemUpdateView(UpdateView):
+class GearItemUpdateView(LoginRequiredMixin, UpdateView):
     model = GearItem
     form_class = GearItemForm
 
@@ -70,8 +70,13 @@ class GearItemListPersonal(LoginRequiredMixin, ListView):
 def showByCategory(request, category_id, is_public):
     if not is_public and not request.user.is_authenticated:
         return redirect(f'{settings.LOGIN_URL}?next={request.path}')
+
+    if is_public:
+        items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
+    else:
+        items = filter(lambda item: item.is_in_category(category), GearItem.objects.filter())
+
     category = Category.objects.get(pk=category_id)
-    items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
     return render(request, 'gear/gearitem_list.html', { 'isPublic' : is_public, 'gearitem_list' : items, 'category' : category})
 
 class PackingListListView(LoginRequiredMixin, ListView):
