@@ -110,4 +110,6 @@ static/
 *.bak
 *.swp
 *~
+*.swo
+
 
