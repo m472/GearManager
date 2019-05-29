@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{item.name}} {% if allowEdit %}bearbeiten{% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+    /* remove row padding */
+    .row {
+        padding: 0;
+    }
+</style>
+
+<h1>{{item.name}}</h1>
+{% if not allowEdit %}
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <a href="{% url 'editItem' item.id %}" class="form-control block-link autowidth">Bearbeiten<a>
+        </div>
+    </div>
+{% endif %}
+<form action="saveEdit" onsubmit="doSubmit()">
+    {% if allowEdit %}
+    {% include "gear/form_row.html" with name="name" description="Bezeichnung" type="text" model=item enabled=True %}
+    {% include "gear/form_row_select.html" with name="manufacturer" type="text" description="Hersteller" options=manufacturers enabled=True %}
+    {% else %}
+    {% include "gear/form_row.html" with name="manufacturer" description="Hersteller" type="text" model=item enabled=False %}
+    {% endif %}
+
+    <div class="form-group row">
+        <label for="category" class="col-sm-2 col-form-label">Kategorie:</label>
+            {% if allowEdit %}
+            <div id="categorySelects" class="col-sm-10">
+                <select id="category" class="form-control small-margin-top-bottom" onchange="selectionChanged(this, 0)">
+                </select>
+            </div>
+            <input type="hidden" name="category" id="hiddenCategoryInput">
+            {% else %}
+            <div id="categorySelects" class="col-sm-10">
+                <input value="{{item.category}}" class="form-control" disabled>
+            </div>
+            {% endif %}
+    </div>
+
+    {% include "gear/form_row_textarea.html" with name="comment" description="Bemerkungen" model=item enabled=allowEdit %}
+    {% include "gear/form_row.html" with name="minWeight" description="Minimalgewicht" type="text" model=item enabled=allowEdit %}
+    {% include "gear/form_row.html" with name="maxWeight" description="Maximalgewicht" type="text" model=item enabled=allowEdit %}
+
+    {% include "gear/form_row_date.html" with name="purchaseDate" description="Kaufdatum" type="date" value=model enabled=allowEdit %}
+    {% include "gear/form_row_checkbox.html" with name="isPublic" description="Öffentlich" type="checkbox" model=item enabled=allowEdit %}
+    <input type="hidden" name="id" value="{{item.id}}">
+    {% if allowEdit %}
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="form-control btn nomargin small-margin-top-bottom">Speichern</button>
+            </div>
+        </div>
+    {% endif %}
+<form>
+{% endblock %}
+

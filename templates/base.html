@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Gearmanager{% endblock %}</title>
+    </head>
+<body>
+    <nav>
+        <ul>
+            <li>
+                <a>Ausrüstungsgegenstände</a>
+                <ul>
+                    <li><a href="{% url 'listPublicItems' %}">Öffentliche</a></li>
+                    <li><a href="{% url 'listPersonalItems' %}">Persönliche</a></li>
+                </ul>
+            </li>
+            <li><a href="{% url 'listLists' %}">Packlisten</a></li>
+            {% if user.is_authenticated %}
+            <li><a href={% url 'logout' %}>Logout</a>
+            {% else %}
+            <li><a href={% url 'login' %}>Login</a>
+            {% endif %}
+        </ul>
+    </nav
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

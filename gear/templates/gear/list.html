@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if isPublic %}Öffentliche{% else %}Meine{% endif %} Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}
+{% endblock %}
+
+{% block content %}
+<h1>
+    {% if isPublic %}
+    <a href="{% url 'listPublicItems' %}" class="item-link">Öffentliche Ausrüstungsgegenstände</a>
+    {% else %}
+    <a href="{% url 'listPersonalItems' %}" class="item-link">Meine Ausrüstungsgegenstände</a>
+    {% endif %}
+    {% if category is not None %}
+        |
+        {% include "gear/category.html" with cat=category linkclass="item-link" isPublic=isPublic separator="|" %}
+    {% endif %}
+</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Hersteller</th>
+        <th>Kategorie</th>
+        <th>min. Gewicht [g]</th>
+        <th>max. Gewicht [g]</th>
+        <th>
+            {% if isPublic %}Auswahl{% else %}Öffentlich{% endif %}
+        </th>
+    </tr>
+    {% for it in items %}
+        <tr>
+            <td>{{it.id}}</td>
+            <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
+            <td>{{it.manufacturer}}</td>
+            <td>{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' %}</td>
+            <td>{{it.minWeight}}</td>
+            <td>{% firstof it.maxWeight it.minWeight %}</td>
+            {% if not isPublic %}
+                {% if it.isPublic %}
+                    <td>&#x1f310;</td>
+                {% endif %}
+            {% else %}
+                <td>
+                    <input type="checkbox" name="addItem" value="{{it.id}}" id="{{it.name}}" form="addToPersonal"></input>
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+<div class="remove-margins-side">
+    <form action="{% url 'createItem' %}" id="editForm">
+        <button type="submit" class="btn float">Neuen Gegenstand erfassen</button>
+        <input type="hidden" name="isPublic" value="{{isPublic}}">
+    </form>
+    {% if not isPublic %}
+        <form action="listPublicItems">
+            <button type="submit" class="btn float">Gegenstand aus Bibliothek hinzufügen</button>
+        </form>
+    {% else %}
+        <form action="addToPersonalItems" name="addToPersonal" method="post">
+            <button type="submit" class="btn float">Zu meinen Gegenständen hinzufügen</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+<div class="form-group row">
+    <label for="{{name}}" class="col-sm-2 col-form-label">{{description}}:</label>
+    <div class="col-sm-10">
+        <textarea name="{{name}}" class="form-control" id="{{name}}" type="{{type}}" value="{{model.name}}" {% if not enabled %}disabled{% endif %}></textarea>
+    </div>
+</div>
+

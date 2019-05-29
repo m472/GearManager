@@ -1,0 +1,14 @@
+{% comment %}
+Recursive Template to create links to all parent categories
+
+Params:
+    cat:            the category
+    separator:      separator element to use between category and parent
+    linkclass:      class to put on link 
+    isPublic:       wheather the generated links should be to public or private itemlist
+{% endcomment %}
+
+{% if cat.parent is not None %}
+{% include "gear/category.html" with cat=cat.parent separator=separator isPublic=isPublic class=linkclass %}{{separator}}
+{% endif %}
+<a href="{% url 'showByCategory' cat.id isPublic %}" class="{{linkclass}}">{{cat.name}}</a>

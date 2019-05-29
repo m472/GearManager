@@ -1,0 +1,86 @@
+<h1>{{packing_list.name}}</h1>
+<div class="remove-margins-side">
+    <form action="{% url 'editPackingList' packing_list.id %}">
+        <button type="submit" class="btn float">Bearbeiten</button>
+    </form>
+    <form action="{% url 'deletePackingList' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" value="{{packing_list.id}}"/>
+        <button type="submit" class="btn float">Löschen</button>
+    </form>
+    <form action="{% url 'savePacked' %}" name="savePacked">
+        <input type="hidden" name="listId" value="{{packing_list.id}}"/>
+        <button type="submit" class="btn float accent">Speichern</button>
+    </form>
+</div>
+<table class="table-striped">
+    <thead>
+        <tr>
+            <th>Eingepackt</th>
+            <th>Anzahl</th>
+            <th>Bezeichnung</th>
+            <th>Hersteller</th>
+            <th>Gewicht min [g]</th>
+            <th>Gewicht max [g]</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rel in relations %}
+            <tr>
+                <td>
+                    <input type="checkbox" form="savePacked" name="isPacked" value="{{rel.id}}" {% if rel.isPacked %}checked{% endif %} onclick="savePackedFunction()"/>
+                </td>
+                <td>
+                    <form action="{% url 'saveCardinality' packing_list.id %}" name="saveCardinality{{rel.id}}" method="post">
+                        {% csrf_token %}
+                        <input type="number" id="count{{rel.id}}" name="count" onchange="saveCardinality(this)" value="{{rel.count}}" class="form-input cardinality-input">
+                        <input type="hidden" name="relationId" value="{{rel.id}}">
+                    </form>
+                </td>
+                <td><a href="{% url 'showItem' rel.item.id" class="item-link">{{rel.item.name}}</a></td>
+                <td>{{rel.item.manufacturer}}</td>
+                <td>{{rel.item.minWeight|multiplyBy:rel.count}}</td>
+                <td>{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}</td>
+                <td>
+                    <form action="{% url 'removeItem' packing_list.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="submit" value="x" class="btn btn-small"/>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<table>
+    <tr>
+        <th></th>
+        <th>Aktuell</th>
+        <th>Gesamt</th>
+    </tr>
+    <tr>
+        <td>Maximales Gewicht:</td>
+        <td>{{model.currentMaxWeight}}&#x202F;g</td>
+        <td>{{model.totalMaxWeight}}&#x202F;g</td>
+    </tr>
+    <tr>
+        <td>Minimales Gewicht:</td>
+        <td>{{model.currentMinWeight}}&#x202F;g</td>
+        <td>{{model.totalMinWeight}}&#x202F;g</td>
+    </tr>
+</table>
+
+<form action="{% url 'addItem' packing_list.id %}" class="form-inline well" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <select name="itemId" id="itemId" class="form-control">
+            {% for it in possibleItems %}
+            <option value="{{it.id}}">{{it.name}}</option>
+            {% endfor %}
+        </select>
+        <button class="btn">Hinzufügen</button>
+    </div>
+</form>
+
+
