@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}
-{% if isPublic %}Öffentliche{% else %}Meine{% endif %} Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}
-{% endblock %}
+{% block title %}{% if isPublic %}Öffentliche{% else %}Meine{% endif %} Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
+{% block heading %}{% endblock %}
 
 {% block content %}
 <h1>

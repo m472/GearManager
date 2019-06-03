@@ -1,4 +1,17 @@
-<h1>{{packing_list.name}}</h1>
+{% extends 'base.html' %}
+
+{% block title %}
+{{packing_list.name}}
+{% endblock %}
+
+{% block script %}
+{% load static %}
+<script src="{% static 'gear/packinglist.js' %}"></script>
+{% endblock %}
+
+{% block heading %}{{packing_list.name}}{% endblock %}
+
+{% block content %}
 <div class="remove-margins-side">
     <form action="{% url 'editPackingList' packing_list.id %}">
         <button type="submit" class="btn float">Bearbeiten</button>
@@ -8,7 +21,8 @@
         <input type="hidden" value="{{packing_list.id}}"/>
         <button type="submit" class="btn float">Löschen</button>
     </form>
-    <form action="{% url 'savePacked' %}" name="savePacked">
+    <form action="{% url 'savePacked' %}" name="savePacked" id="savePacked" method="post">
+        {% csrf_token %}
         <input type="hidden" name="listId" value="{{packing_list.id}}"/>
         <button type="submit" class="btn float accent">Speichern</button>
     </form>
@@ -45,6 +59,7 @@
                 <td>
                     <form action="{% url 'removeItem' packing_list.id %}" method="POST">
                         {% csrf_token %}
+                        <input type="hidden" name="relationId" value="{{rel.id}}"/>
                         <input type="submit" value="x" class="btn btn-small"/>
                     </form>
                 </td>
@@ -83,4 +98,5 @@
     </div>
 </form>
 
+{% endblock %}
 

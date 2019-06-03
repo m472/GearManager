@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}
-{{item.name}} {% if allowEdit %}bearbeiten{% endif %}
-{% endblock %}
+{% block title %}{{item.name}} {% if allowEdit %}bearbeiten{% endif %}{% endblock %}
+{% block heading %}{{item.name}} {% if allowEdit %}bearbeiten{% endif %}{% endblock %}
 
 {% block content %}
 <style>

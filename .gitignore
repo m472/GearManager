@@ -103,6 +103,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# collected django static-files
+static/
+
 # Backup and swap files
 *.bak
 *.swp

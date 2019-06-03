@@ -1,24 +1,17 @@
-<!doctype html>
-<html>
-<head>
-    <meta name="layout" content="main"/>
-    <title>Packlisten</title>
-</head>
-<body>
-    <div class="content">
-        <main class="main-area">
-            <h1>Packlisten</h1>
-            <ul class="list-group">
-                {% for it in lists %}
-                <li class="packinglist-list-item"><a href="{% url 'showPackingList' it.id %}" class="block-link">{{it.id}}{{it.name}}</a></li>
-                {% endfor %}
-            </ul>
-            <div class="remove-margins-side">
-                <form action="{% url 'createList' %}">
-                    <button class="form-control btn accent">Neue Packliste erstellen</button>
-                </form>
-            <div>
-        </main>
-    </div>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Packlisten{% endblock %}
+{% block heading %}Packlisten{% endblock %}
+
+{% block content %}
+<ul class="list-group">
+    {% for it in lists %}
+    <li class="packinglist-list-item"><a href="{% url 'showPackingList' it.id %}" class="block-link">{{it.id}}{{it.name}}</a></li>
+    {% endfor %}
+</ul>
+<div class="remove-margins-side">
+    <form action="{% url 'createList' %}">
+        <button class="form-control btn accent">Neue Packliste erstellen</button>
+    </form>
+<div>
+{% endblock %}

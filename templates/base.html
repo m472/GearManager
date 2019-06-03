@@ -3,6 +3,9 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}Gearmanager{% endblock %}</title>
+
+        {% block script %}
+        {% endblock %}
     </head>
 <body>
     <nav>
@@ -22,8 +25,9 @@
             {% endif %}
         </ul>
     </nav
-
     <main>
+        <h1>{% block heading %}Gearmanager{% endblock %}</h1>
+
         {% block content %}
         {% endblock %}
     </main>

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.forms import ModelForm
 
@@ -32,7 +32,7 @@ def showItem(request, item_id, allow_edit=False):
 def saveItem(request):
     f = GearItemForm(request.POST)
     item = f.save()
-    return showItem(request, item.id, False)
+    return redirect('showItem', item.id, False)
 
 def editItem(request, item_id):
     item = GearItem.objects.get(pk = item_id)
@@ -41,7 +41,7 @@ def editItem(request, item_id):
 
 def createItem(request):
     item = GearItem()
-    return showItem(request, item.id, True)
+    return redirect('showItem', item.id, True)
 
 def listPublicItems(request):
     items = GearItem.objects.filter(isPublic = True)
@@ -85,11 +85,24 @@ def createPackingList(request):
     return editPackingList(request, None)
 
 def deletePackingList(request):
-
     return listLists(request)
 
 def savePackingListPacked(request):
-    return showPackingList(request, list_id)
+    print(list(request.POST.items()))
+    list_id = request.POST.get("listId", None)
+    if list_id is None:
+        raise Http404("Packliste wurde nicht gefunden")
+
+    checked_ids = [int(i) for i in request.POST.getlist("isPacked", [])]
+    
+    for rel in PackingListGearItemRelation.objects.filter(packinglist_id = list_id):
+        checked = rel.id in checked_ids 
+
+        if rel.isPacked != checked:
+            rel.isPacked = checked
+            rel.save()
+
+    return redirect('showPackingList', list_id)
 
 def addItemToList(request, list_id):
     packing_list = PackingList.objects.get(pk = list_id)
@@ -98,10 +111,14 @@ def addItemToList(request, list_id):
 
     PackingListGearItemRelation(packinglist = packing_list, item = item).save()
 
-    return showPackingList(request, list_id)
+    return redirect('showPackingList', list_id)
 
 def removeItemFromList(request, list_id):
-    return showPackingList(request, list_id)
+    rel_id = request.POST.get('relationId', '')
+    relation = PackingListGearItemRelation.objects.get(pk = rel_id)
+    relation.delete()
+
+    return redirect('showPackingList', list_id)
 
 def saveCardinality(request, list_id):
     rel_id = request.POST.get('relationId', '')
@@ -110,7 +127,7 @@ def saveCardinality(request, list_id):
     relation.count = count
     relation.save()
 
-    return showPackingList(request, list_id)
+    return redirect('showPackingList', list_id)
 
 def showPackingList(request, list_id):
     try:
