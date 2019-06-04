@@ -1,8 +1,12 @@
+{% load staticfiles %}
+
 <!DOCTYPE HTML>
 <html>
     <head>
         <meta charset="utf-8">
         <title>{% block title %}Gearmanager{% endblock %}</title>
+
+        <link rel="stylesheet" href="{% static 'css/base.css' %}"></style>
 
         {% block script %}
         {% endblock %}
@@ -10,12 +14,12 @@
 <body>
     <nav>
         <ul>
-            <li>
-                <a>Ausrüstungsgegenstände</a>
-                <ul>
-                    <li><a href="{% url 'listPublicItems' %}">Öffentliche</a></li>
-                    <li><a href="{% url 'listPersonalItems' %}">Persönliche</a></li>
-                </ul>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Ausrüstungsgegenstände</a>
+                <div class="dropdown-content">
+                    <a href="{% url 'listPublicItems' %}">Öffentliche</a>
+                    <a href="{% url 'listPersonalItems' %}">Persönliche</a>
+                </div>
             </li>
             <li><a href="{% url 'listLists' %}">Packlisten</a></li>
             {% if user.is_authenticated %}

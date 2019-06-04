@@ -43,6 +43,31 @@ class GearItemUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('showItem', args=(self.object.id,))
 
+class GearItemListPublic(ListView):
+    model = GearItem
+    queryset = GearItem.objects.filter(isPublic = True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['isPublic'] = True
+        return context
+
+class GearItemListPersonal(ListView):
+    model = GearItem
+
+    def get_queryset(self):
+        return GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['isPublic'] = False
+        return context
+
+def showByCategory(request, category_id, is_public):
+    category = Category.objects.get(pk=category_id)
+    items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
+    return render(request, 'gear/gearitem_list.html', { 'isPublic' : is_public, 'gearitem_list' : items, 'category' : category})
+
 class PackingListListView(ListView):
     model = PackingList
 
@@ -78,19 +103,6 @@ class PackingListDetailView(DetailView):
         context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
         context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
         return context
-
-def listPublicItems(request):
-    items = GearItem.objects.filter(isPublic = True)
-    return render(request, 'gear/gearitem_list.html', { 'isPublic' : True, 'items' : items })
-
-def listPersonalItems(request):
-    items = GearItem.objects.filter(gearownership__owner_id = request.user.id)
-    return render(request, 'gear/gearitem_list.html', { 'isPublic' : False, 'items' : items })
-
-def showByCategory(request, category_id, is_public):
-    category = Category.objects.get(pk=category_id)
-    items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
-    return render(request, 'gear/gearitem_list.html', { 'isPublic' : is_public, 'items' : items, 'category' : category})
 
 def savePackingListPacked(request):
     list_id = request.POST.get("listId", None)

@@ -26,7 +26,7 @@
             {% if isPublic %}Auswahl{% else %}Öffentlich{% endif %}
         </th>
     </tr>
-    {% for it in items %}
+    {% for it in gearitem_list %}
         <tr>
             <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
             <td>{{it.manufacturer}}</td>
