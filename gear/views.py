@@ -59,9 +59,25 @@ class PackingListCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('showPackingList', args=(self.object.id,))
 
+class PackingListUpdateView(UpdateView):
+    model = PackingList
+    form_class = PackingListForm
+    
+    def get_success_url(self):
+        return reverse_lazy('showPackingList', args=(self.object.id,))
+
 class PackingListDeleteView(DeleteView):
     model = PackingList
     success_url = reverse_lazy('listLists')
+
+class PackingListDetailView(DetailView):
+    model = PackingList
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
+        context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
+        return context
 
 def listPublicItems(request):
     items = GearItem.objects.filter(isPublic = True)
@@ -74,34 +90,9 @@ def listPersonalItems(request):
 def showByCategory(request, category_id, is_public):
     category = Category.objects.get(pk=category_id)
     items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
-    return render(request, 'gear/list.html', { 'isPublic' : is_public, 'items' : items, 'category' : category})
-
-def editPackingList(request, list_id):
-    if list_id is not None:
-        try:
-            packing_list = PackingList.objects.get(pk = list_id)
-            form = PackingListForm(packing_list)
-            title = packing_list.name
-        except PackingList.DoesNotExist:
-            raise Http404("Packing list not found")
-    else:
-        form = PackingListForm()
-        title = "Neue Packliste"
-
-    return render(request, 'gear/editForm.html', { 'title' : title, 'form' : form, 'saveUrl' : 'savePackingList'})
-
-def savePackingList(request):
-    packing_list = PackingListForm(request.POST).save(commit = False)
-    packing_list.owner = request.user
-    packing_list.save()
-    return listLists(request)
-
-def createPackingList(request):
-    packing_list = PackingList()
-    return editPackingList(request, None)
+    return render(request, 'gear/gearitem_list.html', { 'isPublic' : is_public, 'items' : items, 'category' : category})
 
 def savePackingListPacked(request):
-    print(list(request.POST.items()))
     list_id = request.POST.get("listId", None)
     if list_id is None:
         raise Http404("Packliste wurde nicht gefunden")
@@ -141,13 +132,4 @@ def saveCardinality(request, list_id):
     relation.save()
 
     return redirect('showPackingList', list_id)
-
-class PackingListDetailView(DetailView):
-    model = PackingList
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
-        context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
-        return context
 
