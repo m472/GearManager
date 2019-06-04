@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from django.forms import ModelForm
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
-from .models import GearItem, Category, Manufacturer, PackingList, PackingListGearItemRelation
+from .models import GearItem, GearOwnership, Category, Manufacturer, PackingList, PackingListGearItemRelation
 
 # Create your views here.
 class GearItemForm(ModelForm):
@@ -15,50 +19,62 @@ class PackingListForm(ModelForm):
         model = PackingList
         fields = ['name', 'comment', 'destination', 'tripStart', 'tripEnd']
 
-def index(request):
-    return HttpResponse("Hello World! Youre at the index")
+class GearItemDetailView(DetailView):
+    model = GearItem
+    context_object_name = 'item'
 
-def showItem(request, item_id, allow_edit=False):
-    if item_id is not None:
-        try:
-            item = GearItem.objects.get(pk=item_id)
-        except GearItem.DoesNotExist:
-            raise Http404("Item does not exist")
-    else:
-        item = None
+class GearItemCreateView(CreateView):
+    model = GearItem
+    form_class = GearItemForm
+    success_url = reverse_lazy('listPersonalItems')
 
-    return render(request, 'gear/detail.html', { 'item' : item, 'allowEdit' : allow_edit, 'isPublic' : False } )
+    def form_valid(self, form):
+        self.object = form.save()
 
-def saveItem(request):
-    f = GearItemForm(request.POST)
-    item = f.save()
-    return redirect('showItem', item.id, False)
+        ownership = GearOwnership(owner = self.request.user, ownedItem = self.object)
+        ownership.save()
 
-def editItem(request, item_id):
-    item = GearItem.objects.get(pk = item_id)
-    form = GearItemForm(item)
-    return render(request, 'gear/editForm.html', { 'form' : form, 'saveUrl' : 'saveItem' })
+        return redirect(self.get_success_url())
 
-def createItem(request):
-    item = GearItem()
-    return redirect('showItem', item.id, True)
+class GearItemUpdateView(UpdateView):
+    model = GearItem
+    form_class = GearItemForm
+
+    def get_success_url(self):
+        return reverse_lazy('showItem', args=(self.object.id,))
+
+class PackingListListView(ListView):
+    model = PackingList
+
+class PackingListCreateView(CreateView):
+    model = PackingList
+    form_class = PackingListForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit = False)
+        self.object.owner_id = self.request.user.id
+        self.object.save()
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('showPackingList', args=(self.object.id,))
+
+class PackingListDeleteView(DeleteView):
+    model = PackingList
+    success_url = reverse_lazy('listLists')
 
 def listPublicItems(request):
     items = GearItem.objects.filter(isPublic = True)
-    return render(request, 'gear/list.html', { 'isPublic' : True, 'items' : items })
+    return render(request, 'gear/gearitem_list.html', { 'isPublic' : True, 'items' : items })
 
 def listPersonalItems(request):
     items = GearItem.objects.filter(gearownership__owner_id = request.user.id)
-    return render(request, 'gear/list.html', { 'isPublic' : False, 'items' : items })
+    return render(request, 'gear/gearitem_list.html', { 'isPublic' : False, 'items' : items })
 
 def showByCategory(request, category_id, is_public):
     category = Category.objects.get(pk=category_id)
     items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
     return render(request, 'gear/list.html', { 'isPublic' : is_public, 'items' : items, 'category' : category})
-
-def listLists(request):
-    lists = PackingList.objects.filter(owner = request.user)
-    return render(request, 'gear/packinglistOverview.html', { 'lists' : lists })
 
 def editPackingList(request, list_id):
     if list_id is not None:
@@ -83,9 +99,6 @@ def savePackingList(request):
 def createPackingList(request):
     packing_list = PackingList()
     return editPackingList(request, None)
-
-def deletePackingList(request):
-    return listLists(request)
 
 def savePackingListPacked(request):
     print(list(request.POST.items()))
@@ -129,14 +142,12 @@ def saveCardinality(request, list_id):
 
     return redirect('showPackingList', list_id)
 
-def showPackingList(request, list_id):
-    try:
-        packing_list = PackingList.objects.get(pk = list_id)
-    except PackingList.DoesNotExist:
-        raise Http404("No packinglist with this ID")
+class PackingListDetailView(DetailView):
+    model = PackingList
 
-    items = GearItem.objects.filter(gearownership__owner_id = request.user.id)
-    relations = PackingListGearItemRelation.objects.filter(packinglist_id = packing_list.id)
-
-    return render(request, 'gear/showPackingList.html', { 'packing_list' : packing_list, 'relations' : relations, 'possibleItems' : items})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
+        context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
+        return context
 

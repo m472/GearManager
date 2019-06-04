@@ -5,8 +5,8 @@
 
 {% block content %}
 <ul class="list-group">
-    {% for it in lists %}
-    <li class="packinglist-list-item"><a href="{% url 'showPackingList' it.id %}" class="block-link">{{it.id}}{{it.name}}</a></li>
+    {% for it in packinglist_list %}
+    <li class="packinglist-list-item"><a href="{% url 'showPackingList' it.id %}" class="block-link">{{it.name}}</a></li>
     {% endfor %}
 </ul>
 <div class="remove-margins-side">

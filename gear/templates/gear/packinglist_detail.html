@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{packing_list.name}}
+{{packinglist.name}}
 {% endblock %}
 
 {% block script %}
@@ -9,21 +9,22 @@
 <script src="{% static 'gear/packinglist.js' %}"></script>
 {% endblock %}
 
-{% block heading %}{{packing_list.name}}{% endblock %}
+{% block heading %}{{packinglist.name}}{% endblock %}
 
 {% block content %}
+
 <div class="remove-margins-side">
-    <form action="{% url 'editPackingList' packing_list.id %}">
+    <form action="{% url 'editPackingList' packinglist.id %}">
         <button type="submit" class="btn float">Bearbeiten</button>
     </form>
-    <form action="{% url 'deletePackingList' %}" method="POST">
+    <form action="{% url 'deletePackingList' packinglist.id %}" method="post">
         {% csrf_token %}
-        <input type="hidden" value="{{packing_list.id}}"/>
+        <input type="hidden" value="{{packinglist.id}}"/>
         <button type="submit" class="btn float">Löschen</button>
     </form>
     <form action="{% url 'savePacked' %}" name="savePacked" id="savePacked" method="post">
         {% csrf_token %}
-        <input type="hidden" name="listId" value="{{packing_list.id}}"/>
+        <input type="hidden" name="listId" value="{{packinglist.id}}"/>
         <button type="submit" class="btn float accent">Speichern</button>
     </form>
 </div>
@@ -46,18 +47,18 @@
                     <input type="checkbox" form="savePacked" name="isPacked" value="{{rel.id}}" {% if rel.isPacked %}checked{% endif %} onclick="savePackedFunction()"/>
                 </td>
                 <td>
-                    <form action="{% url 'saveCardinality' packing_list.id %}" name="saveCardinality{{rel.id}}" method="post">
+                    <form action="{% url 'saveCardinality' packinglist.id %}" name="saveCardinality{{rel.id}}" method="post">
                         {% csrf_token %}
                         <input type="number" id="count{{rel.id}}" name="count" onchange="saveCardinality(this)" value="{{rel.count}}" class="form-input cardinality-input">
                         <input type="hidden" name="relationId" value="{{rel.id}}">
                     </form>
                 </td>
-                <td><a href="{% url 'showItem' rel.item.id" class="item-link">{{rel.item.name}}</a></td>
+                <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
                 <td>{{rel.item.manufacturer}}</td>
                 <td>{{rel.item.minWeight|multiplyBy:rel.count}}</td>
                 <td>{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}</td>
                 <td>
-                    <form action="{% url 'removeItem' packing_list.id %}" method="POST">
+                    <form action="{% url 'removeItem' packinglist.id %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="relationId" value="{{rel.id}}"/>
                         <input type="submit" value="x" class="btn btn-small"/>
@@ -86,7 +87,7 @@
     </tr>
 </table>
 
-<form action="{% url 'addItem' packing_list.id %}" class="form-inline well" method="post">
+<form action="{% url 'addItem' packinglist.id %}" class="form-inline well" method="post">
     {% csrf_token %}
     <div class="form-group">
         <select name="itemId" id="itemId" class="form-control">
@@ -97,6 +98,5 @@
         <button class="btn">Hinzufügen</button>
     </div>
 </form>
-
 {% endblock %}
 

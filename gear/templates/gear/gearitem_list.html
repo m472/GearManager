@@ -17,7 +17,6 @@
 </h1>
 <table>
     <tr>
-        <th>ID</th>
         <th>Name</th>
         <th>Hersteller</th>
         <th>Kategorie</th>
@@ -29,7 +28,6 @@
     </tr>
     {% for it in items %}
         <tr>
-            <td>{{it.id}}</td>
             <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
             <td>{{it.manufacturer}}</td>
             <td>{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' %}</td>
@@ -50,7 +48,6 @@
 <div class="remove-margins-side">
     <form action="{% url 'createItem' %}" id="editForm">
         <button type="submit" class="btn float">Neuen Gegenstand erfassen</button>
-        <input type="hidden" name="isPublic" value="{{isPublic}}">
     </form>
     {% if not isPublic %}
         <form action="listPublicItems">
