@@ -23,6 +23,7 @@ from . import settings
 
 urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('gear/', include('gear.urls')),
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name="home.html"), name="home"),

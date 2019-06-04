@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
 from django.forms import ModelForm
+from django.conf import settings
+from django.urls import reverse_lazy
+from django.http import HttpResponse, Http404
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import GearItem, GearOwnership, Category, Manufacturer, PackingList, PackingListGearItemRelation
 
@@ -52,7 +55,7 @@ class GearItemListPublic(ListView):
         context['isPublic'] = True
         return context
 
-class GearItemListPersonal(ListView):
+class GearItemListPersonal(LoginRequiredMixin, ListView):
     model = GearItem
 
     def get_queryset(self):
@@ -60,18 +63,21 @@ class GearItemListPersonal(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(self.request.user)
         context['isPublic'] = False
         return context
 
 def showByCategory(request, category_id, is_public):
+    if not is_public and not request.user.is_authenticated:
+        return redirect(f'{settings.LOGIN_URL}?next={request.path}')
     category = Category.objects.get(pk=category_id)
     items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
     return render(request, 'gear/gearitem_list.html', { 'isPublic' : is_public, 'gearitem_list' : items, 'category' : category})
 
-class PackingListListView(ListView):
+class PackingListListView(LoginRequiredMixin, ListView):
     model = PackingList
 
-class PackingListCreateView(CreateView):
+class PackingListCreateView(LoginRequiredMixin, CreateView):
     model = PackingList
     form_class = PackingListForm
 
@@ -84,18 +90,18 @@ class PackingListCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('showPackingList', args=(self.object.id,))
 
-class PackingListUpdateView(UpdateView):
+class PackingListUpdateView(LoginRequiredMixin, UpdateView):
     model = PackingList
     form_class = PackingListForm
     
     def get_success_url(self):
         return reverse_lazy('showPackingList', args=(self.object.id,))
 
-class PackingListDeleteView(DeleteView):
+class PackingListDeleteView(LoginRequiredMixin, DeleteView):
     model = PackingList
     success_url = reverse_lazy('listLists')
 
-class PackingListDetailView(DetailView):
+class PackingListDetailView(LoginRequiredMixin, DetailView):
     model = PackingList
 
     def get_context_data(self, **kwargs):
@@ -104,6 +110,7 @@ class PackingListDetailView(DetailView):
         context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
         return context
 
+@login_required
 def savePackingListPacked(request):
     list_id = request.POST.get("listId", None)
     if list_id is None:
@@ -120,6 +127,7 @@ def savePackingListPacked(request):
 
     return redirect('showPackingList', list_id)
 
+@login_required
 def addItemToList(request, list_id):
     packing_list = PackingList.objects.get(pk = list_id)
     item_id = request.POST.get("itemId", "")
@@ -129,6 +137,7 @@ def addItemToList(request, list_id):
 
     return redirect('showPackingList', list_id)
 
+@login_required
 def removeItemFromList(request, list_id):
     rel_id = request.POST.get('relationId', '')
     relation = PackingListGearItemRelation.objects.get(pk = rel_id)
@@ -136,6 +145,7 @@ def removeItemFromList(request, list_id):
 
     return redirect('showPackingList', list_id)
 
+@login_required
 def saveCardinality(request, list_id):
     rel_id = request.POST.get('relationId', '')
     relation = PackingListGearItemRelation.objects.get(pk = rel_id)
