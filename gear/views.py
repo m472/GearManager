@@ -74,7 +74,7 @@ def showByCategory(request, category_id, is_public):
     if is_public:
         items = filter(lambda item: item.is_in_category(category), GearItem.objects.all())
     else:
-        items = filter(lambda item: item.is_in_category(category), GearItem.objects.filter())
+        items = filter(lambda item: item.is_in_category(category), GearItem.objects.filter(gearownership__owner_id = request.user.id))
 
     category = Category.objects.get(pk=category_id)
     return render(request, 'gear/gearitem_list.html', { 'isPublic' : is_public, 'gearitem_list' : items, 'category' : category})
