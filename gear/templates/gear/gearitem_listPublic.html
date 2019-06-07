@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Öffentliche Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
+{% block heading %}{% endblock %}
+
+{% block content %}
+<h1>
+    <a href="{% url 'listPublicItems' %}" class="item-link">Öffentliche Ausrüstungsgegenstände</a>
+    {% if category is not None %}
+        |
+        {% include "gear/category.html" with cat=category linkclass="item-link" isPublic=True separator="|" %}
+    {% endif %}
+</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Hersteller</th>
+        <th>Kategorie</th>
+        <th>min. Gewicht [g]</th>
+        <th>max. Gewicht [g]</th>
+        <th>Auswahl</th>
+    </tr>
+    {% for it in gearitem_list %}
+        <tr>
+            <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
+            <td>{{it.manufacturer}}</td>
+            <td>{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=True %}</td>
+            <td>{{it.minWeight}}</td>
+            <td>{% firstof it.maxWeight it.minWeight %}</td>
+            <td>
+                <input type="checkbox" name="addItem" value="{{it.id}}" id="{{it.name}}" form="addToPersonal"></input>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="remove-margins-side">
+    <form action="{% url 'createItem' %}" id="editForm">
+        <button type="submit" class="btn float">Neuen Gegenstand erfassen</button>
+    </form>
+    <form action="addToPersonalItems" name="addToPersonal" method="post">
+        <button type="submit" class="btn float">Zu meinen Gegenständen hinzufügen</button>
+    </form>
+</div>
+{% endblock %}

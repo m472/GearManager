@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Meine Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
+{% block heading %}{% endblock %}
+
+{% block content %}
+<h1>
+    <a href="{% url 'listPersonalItems' %}" class="item-link">Meine Ausrüstungsgegenstände</a>
+    {% if category is not None %}
+        |
+        {% include "gear/category.html" with cat=category linkclass="item-link" isPublic=False separator="|" %}
+    {% endif %}
+</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Hersteller</th>
+        <th>Kategorie</th>
+        <th>min. Gewicht [g]</th>
+        <th>max. Gewicht [g]</th>
+        <th>
+            Öffentlich
+        </th>
+    </tr>
+    {% for it in gearitem_list %}
+        <tr>
+            <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
+            <td>{{it.manufacturer}}</td>
+            <td>{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=False %}</td>
+            <td>{{it.minWeight}}</td>
+            <td>{% firstof it.maxWeight it.minWeight %}</td>
+            {% if it.isPublic %}
+                <td>&#x1f310;</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+<div class="remove-margins-side">
+    <form action="{% url 'createItem' %}" id="editForm">
+        <button type="submit" class="btn float">Neuen Gegenstand erfassen</button>
+    </form>
+    <form action="listPublicItems">
+        <button type="submit" class="btn float">Gegenstand aus Bibliothek hinzufügen</button>
+    </form>
+</div>
+{% endblock %}
