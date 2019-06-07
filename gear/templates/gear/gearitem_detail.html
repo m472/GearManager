@@ -1,16 +1,42 @@
 {% extends 'base.html' %}
 
-{% block title %}{{item.name}} {% if allowEdit %}bearbeiten{% endif %}{% endblock %}
-{% block heading %}{{item.name}} {% if allowEdit %}bearbeiten{% endif %}{% endblock %}
+{% block title %}{{item.name}}{% endblock %}
+{% block heading %}{{item.name}}{% endblock %}
 
 {% block content %}
 
-{% if not allowEdit %}
-    <a href="{% url 'editItem' item.id %}" class="form-control block-link autowidth">Bearbeiten<a>
-{% endif %}
+<a href="{% url 'editItem' item.id %}" class="form-control block-link autowidth">Bearbeiten<a>
 
-<form action="saveEdit" onsubmit="doSubmit()">
-    {{form.as_p()}}
-<form>
+<table>
+    <tr>
+        <th>Hersteller:</th>
+        <td>{{item.manufacturer}}</td>
+    </tr>
+    <tr>
+        <th>Kommentar:</th>
+        <td>{{item.comment}}</td>
+    </tr>
+    <tr>
+        <th>Kategorie:</th>
+        <td>{% include "gear/category.html" with cat=item.category linkclass="item-link" separator='>' isPublic=item.isPublic %}</td>
+    </tr>
+    <tr>
+        <th>Kommentar:</th>
+        <td>{{item.comment}}</td>
+    </tr>
+    <tr>
+        <th>Minimalgewicht:</th>
+        <td>{{item.minWeight}}</td>
+    </tr>
+    <tr>
+        <th>Maximalgewicht:</th>
+        <td>{{item.maxWeight}}</td>
+    </tr>
+    <tr>
+        <th>Kaufdatum:</th>
+        <td>{{item.purchaseDate|date}}</td>
+    </tr>
+</table>
+
 {% endblock %}
 
