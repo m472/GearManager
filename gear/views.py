@@ -111,7 +111,8 @@ class PackingListDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
+        context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id) \
+                                                   .exclude(packinglistgearitemrelation__packinglist_id = self.object.id)
         context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
         return context
 
