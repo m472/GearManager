@@ -8,8 +8,10 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.utils import IntegrityError
 
-from .models import GearItem, GearOwnership, Category, Manufacturer, PackingList, PackingListGearItemRelation
+from .models import GearItem, GearOwnership, Category, Manufacturer, \
+                    PackingList, PackingListGearItemRelation, GearItemGroup, GearItemGroupRelation
 
 # Create your views here.
 class GearItemForm(ModelForm):
@@ -113,6 +115,7 @@ class PackingListDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id) \
                                                    .exclude(packinglistgearitemrelation__packinglist_id = self.object.id)
+        context['groups'] = GearItemGroup.objects.filter(gearitemgroupownership__owner_id = self.request.user.id) 
         context['relations'] = PackingListGearItemRelation.objects.filter(packinglist_id = self.object.id)
         return context
 
@@ -140,6 +143,20 @@ def addItemToList(request, list_id):
     item = GearItem.objects.get(pk = item_id)
 
     PackingListGearItemRelation(packinglist = packing_list, item = item).save()
+
+    return redirect('showPackingList', list_id)
+
+@login_required
+def addGroupToList(request, list_id):
+    packing_list = PackingList.objects.get(pk = list_id)
+    group_id = request.POST.get("groupId", "")
+    group = GearItemGroup.objects.get(pk = group_id)
+
+    for relation in GearItemGroupRelation.objects.filter(group__id = group_id):
+        try:
+            PackingListGearItemRelation(packinglist = packing_list, item = relation.item, addedByGroup = group).save()
+        except IntegrityError:
+            pass
 
     return redirect('showPackingList', list_id)
 

@@ -98,5 +98,16 @@
         <button class="btn">Hinzufügen</button>
     </div>
 </form>
+<form action="{% url 'addGroup' packinglist.id %}" class="form-inline well" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <select name="groupId" id="groupId" class="form-control">
+            {% for group in groups %}
+            <option value="{{group.id}}">{{group.name}}</option>
+            {% endfor %}
+        </select>
+        <button class="btn">Hinzufügen</button>
+    </div>
+</form>
 {% endblock %}
 

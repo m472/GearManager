@@ -19,6 +19,7 @@ urlpatterns = [
     path('lists/delete/<int:pk>', views.PackingListDeleteView.as_view(), name = 'deletePackingList'),
     path('lists/saveItems', views.savePackingListPacked, name = 'savePacked'),
     path('lists/addItem/<int:list_id>', views.addItemToList, name = 'addItem'),
+    path('lists/addGroup/<int:list_id>', views.addGroupToList, name = 'addGroup'),
     path('lists/removeItem/<int:list_id>', views.removeItemFromList, name = 'removeItem'),
     path('lists/saveCardinality/<int:list_id>', views.saveCardinality, name = 'saveCardinality'),
 ]
