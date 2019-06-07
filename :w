@@ -56,7 +56,7 @@
                 </td>
                 <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
                 <td>{{rel.item.manufacturer}}</td>
-                <td>{{rel.addedByGroup|default_if_none:""}}</td>
+                <td>{{rel.addedByGroup|default_if_none:}}</td>
                 <td>{{rel.item.minWeight|multiplyBy:rel.count}}</td>
                 <td>{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}</td>
                 <td>
