@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}Öffentliche Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
-{% block heading %}{% endblock %}
-
-{% block content %}
+{% block heading %}
 <h1>
     <a href="{% url 'listPublicItems' %}" class="item-link">Öffentliche Ausrüstungsgegenstände</a>
     {% if category is not None %}
@@ -11,6 +9,9 @@
         {% include "gear/category.html" with cat=category linkclass="item-link" isPublic=True separator="|" %}
     {% endif %}
 </h1>
+{% endblock %}
+
+{% block content %}
 <table>
     <tr>
         <th>Name</th>
@@ -33,12 +34,12 @@
         </tr>
     {% endfor %}
 </table>
-<div class="remove-margins-side">
+<div class="flex">
     <form action="{% url 'createItem' %}" id="editForm">
-        <button type="submit" class="btn float">Neuen Gegenstand erfassen</button>
+        <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
     </form>
     <form action="addToPersonalItems" name="addToPersonal" method="post">
-        <button type="submit" class="btn float">Zu meinen Gegenständen hinzufügen</button>
+        <button type="submit" class="btn flex-child">Zu meinen Gegenständen hinzufügen</button>
     </form>
 </div>
 {% endblock %}

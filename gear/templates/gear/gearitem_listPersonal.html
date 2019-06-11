@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %}Meine Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
-{% block heading %}{% endblock %}
+
+{% block heading %}
+    <h1>
+        <a href="{% url 'listPersonalItems' %}" class="item-link">Meine Ausrüstungsgegenstände</a>
+        {% if category is not None %}
+            |
+            {% include "gear/category.html" with cat=category linkclass="item-link" isPublic=False separator="|" %}
+        {% endif %}
+    </h1>
+{% endblock %}
 
 {% block content %}
-<h1>
-    <a href="{% url 'listPersonalItems' %}" class="item-link">Meine Ausrüstungsgegenstände</a>
-    {% if category is not None %}
-        |
-        {% include "gear/category.html" with cat=category linkclass="item-link" isPublic=False separator="|" %}
-    {% endif %}
-</h1>
 <table>
     <tr>
         <th>Name</th>
@@ -35,12 +37,12 @@
         </tr>
     {% endfor %}
 </table>
-<div class="remove-margins-side">
+<div class="flex">
     <form action="{% url 'createItem' %}" id="editForm">
-        <button type="submit" class="btn float">Neuen Gegenstand erfassen</button>
+        <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
     </form>
     <form action="listPublicItems">
-        <button type="submit" class="btn float">Gegenstand aus Bibliothek hinzufügen</button>
+        <button type="submit" class="btn flex-child">Gegenstand aus Bibliothek hinzufügen</button>
     </form>
 </div>
 {% endblock %}

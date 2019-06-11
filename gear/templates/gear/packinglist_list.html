@@ -9,9 +9,6 @@
     <li class="packinglist-list-item"><a href="{% url 'showPackingList' it.id %}" class="block-link">{{it.name}}</a></li>
     {% endfor %}
 </ul>
-<div class="remove-margins-side">
-    <form action="{% url 'createList' %}">
-        <button class="form-control btn accent">Neue Packliste erstellen</button>
-    </form>
-<div>
+<a class="accent block-link packinglist-new" href="{% url 'createList' %}">Neue Packliste erstellen</a>
+
 {% endblock %}

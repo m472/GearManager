@@ -13,22 +13,23 @@
 
 {% block content %}
 
-<div class="remove-margins-side">
+<div class="flex">
     <form action="{% url 'editPackingList' packinglist.id %}">
-        <button type="submit" class="btn float">Bearbeiten</button>
+        <button type="submit" class="btn flex-child">Bearbeiten</button>
     </form>
     <form action="{% url 'deletePackingList' packinglist.id %}" method="post">
         {% csrf_token %}
         <input type="hidden" value="{{packinglist.id}}"/>
-        <button type="submit" class="btn float">Löschen</button>
+        <button type="submit" class="btn">Löschen</button>
     </form>
     <form action="{% url 'savePacked' %}" name="savePacked" id="savePacked" method="post">
         {% csrf_token %}
         <input type="hidden" name="listId" value="{{packinglist.id}}"/>
-        <button type="submit" class="btn float accent">Speichern</button>
+        <button type="submit" class="btn accent">Speichern</button>
     </form>
 </div>
-<table class="table-striped">
+<div>
+<table>
     <thead>
         <tr>
             <th>Eingepackt</th>
@@ -43,7 +44,7 @@
     </thead>
     <tbody>
         {% for rel in relations %}
-            <tr>
+        <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
                 <td>
                     <input type="checkbox" form="savePacked" name="isPacked" value="{{rel.id}}" {% if rel.isPacked %}checked{% endif %} onclick="savePackedFunction()"/>
                 </td>
@@ -70,6 +71,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 <table>
     <tr>
@@ -77,15 +79,15 @@
         <th>Aktuell</th>
         <th>Gesamt</th>
     </tr>
-    <tr>
-        <td>Maximales Gewicht:</td>
-        <td>{{weights.currentMaxWeight}}&#x202F;g</td>
-        <td>{{weights.totalMaxWeight}}&#x202F;g</td>
-    </tr>
-    <tr>
+    <tr class="table-zebra-dark">
         <td>Minimales Gewicht:</td>
         <td>{{weights.currentMinWeight}}&#x202F;g</td>
         <td>{{weights.totalMinWeight}}&#x202F;g</td>
+    </tr>
+    <tr class="table-zebra-bright">
+        <td>Maximales Gewicht:</td>
+        <td>{{weights.currentMaxWeight}}&#x202F;g</td>
+        <td>{{weights.totalMaxWeight}}&#x202F;g</td>
     </tr>
 </table>
 

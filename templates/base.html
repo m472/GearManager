@@ -15,7 +15,7 @@
     <nav>
         <ul>
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Ausrüstungsgegenstände</a>
+                <a href="#" class="dropbtn">Ausrüstungsgegenstände</a>
                 <div class="dropdown-content">
                     <a href="{% url 'listPublicItems' %}">Öffentliche</a>
                     <a href="{% url 'listPersonalItems' %}">Persönliche</a>
@@ -28,12 +28,15 @@
             <li><a href={% url 'login' %}>Login</a>
             {% endif %}
         </ul>
-    </nav
+    </nav>
     <main>
         <h1>{% block heading %}Gearmanager{% endblock %}</h1>
 
         {% block content %}
         {% endblock %}
     </main>
+
+    <footer>
+    </footer>
 </body>
 </html>
