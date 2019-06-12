@@ -1,4 +1,38 @@
 {% extends 'base.html' %}
 
 {% block title %}Welcome to Gearmanager{% endblock %}
-{% block heading %}Welcome to Gearmanager{% endblock %}
+{% block heading %}{% endblock %}
+
+{% block style %}
+{% load static %}
+<style>
+main {
+    position: absolute;
+    background: url('{% static "gear/hiking.jpg" %}') no-repeat center center;
+    background-size: cover;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
+
+@font-face {
+    font-family: dejavu-extra;
+    src: url('{% static "gear/dejavusans-extralight.ttf" %}');
+}
+
+.greeting {
+    font-family: dejavu-extra;
+    font-weight: normal;
+    font-size: 7vh;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="center-vertical center-horizontal">
+    <h1 class="greeting">Welcome to Gearmanager</h1>
+</div>
+{% endblock %}

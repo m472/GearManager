@@ -189,7 +189,7 @@ footer {
     bottom: 0;
     height: 5%;
     padding: 0 20px;
-    background-color: gray;
+    background-color: var(--dark-gray);
     color: white;
 }
 
@@ -245,6 +245,13 @@ footer > div > small > a:visited, footer > div > small > a:link {
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+}
+
+.center-horizontal {
+    position: absolute;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
 .col1 {
