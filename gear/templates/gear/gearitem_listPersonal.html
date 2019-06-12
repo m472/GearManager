@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block script %}
+{% load static %}
+<script src="{% static 'gear/grayout.js' %}"></script>
+{% endblock %}
+
 {% block title %}Meine Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
 
 {% block heading %}
@@ -20,9 +25,8 @@
         <th>Kategorie</th>
         <th>min. Gewicht [g]</th>
         <th>max. Gewicht [g]</th>
-        <th>
-            Öffentlich
-        </th>
+        <th>Öffentlich</th>
+        <th>Auswahl</th>
     </tr>
     {% for it in gearitem_list %}
         <tr>
@@ -34,6 +38,9 @@
             {% if it.isPublic %}
                 <td>&#x1f310;</td>
             {% endif %}
+            <td>
+                <input type="checkbox" form="addToListOrGroup" name="itemIds" id="{{it.name}}" value="{{it.id}}" onchange="grayOutIfNoneSelected(this, 'addToListOrGroupButton')"></input>
+            </td>
         </tr>
     {% endfor %}
 </table>
@@ -41,8 +48,39 @@
     <form action="{% url 'createItem' %}" id="editForm">
         <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
     </form>
-    <form action="listPublicItems">
+    <form action="{% url 'listPublicItems' %}">
         <button type="submit" class="btn flex-child">Gegenstand aus Bibliothek hinzufügen</button>
     </form>
+    <form action="#selectListOrGroup">
+        <button type="submit" class="btn flex-child btn-grayout" id="addToListOrGroupButton" disabled>Zu Packliste oder Gruppe hinzufügen</button>
+    </form>
 </div>
+
+<div class="popup-overlay" id="selectListOrGroup">
+    <form action="{% url 'addToListOrGroup' %}" name="addToListOrGroup" id="addToListOrGroup" method="post">
+        {% csrf_token %}
+        <div class="popup">
+            <div class="align-right">
+                <a href="#" class="inline-block-link close-popup">x</a>
+            </div>
+            <div class="grid-3cols">
+                <label for="packinglist" class="col1 row1">Packliste:</label>
+                <select id="packinglist" name="packinglist" class="col2 row1">
+                    {% for list in packinglists %}
+                    <option value="{{list.id}}">{{list.name}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn center col3 row1" name="addToList" value="addToList">hier hinzufügen</button>
+                <label for="group" class="col1 row2">Gruppe:</label>
+                <select id="group" name="group" class="col2 row2">
+                    {% for group in itemGroups %}
+                    <option value="{{group.id}}">{{group.name}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn center col3 row2" name="addToGroup" value="addToGroup">hier hinzufügen</button>
+            </div>
+        </div>
+    </form>
+</div>
+
 {% endblock %}

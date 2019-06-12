@@ -75,6 +75,12 @@ class GearItemListPersonal(LoginRequiredMixin, ListView):
     model = GearItem
     template_name_suffix = "_listPersonal"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['itemGroups'] = GearItemGroup.objects.filter(gearitemgroupownership__owner_id = self.request.user.id)
+        context['packinglists'] = PackingList.objects.filter(owner_id = self.request.user.id)
+        return context
+
     def get_queryset(self):
         return GearItem.objects.filter(gearownership__owner_id = self.request.user.id)
 
@@ -133,10 +139,26 @@ class PackingListDetailView(LoginRequiredMixin, DetailView):
         return context
 
 @login_required
-def addItemToPersonal(request):
-
+def addItemToListOrGroup(request):
+    selectedItemIds = request.POST.getlist("itemIds")
     print(request.POST)
 
+    if request.POST.get('addToList'):
+        packinglist = PackingList.objects.get(pk = request.POST.get('packinglist'))
+        for item_id in selectedItemIds:
+            item = GearItem.objects.get(pk = item_id)
+            PackingListGearItemRelation(packinglist = packinglist, item = item).save()
+
+    if request.POST.get('addToGroup'):
+        group = GearItemGroup.objects.get(pk = request.POST.get('group'))
+        for item_id in selectedItemIds:
+            item = GearItem.objects.get(pk = item_id)
+            GearItemGroupRelation(group = group, item = item).save()
+
+    return redirect('listPersonalItems')
+
+@login_required
+def addItemToPersonal(request):
     for item_id in request.POST.getlist("addItem"):
         item = GearItem.objects.get(pk = item_id)
         GearOwnership(owner = request.user, ownedItem = item).save()

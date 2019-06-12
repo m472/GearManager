@@ -101,6 +101,11 @@ nav li.dropdown {
     color: white;
 }
 
+.btn-grayout, .btn-grayout:hover {
+    background-color: gray;
+    color: white;
+}
+
 .list-group {
     margin-top: 1em;
     margin-bottom: 1em;
@@ -159,6 +164,12 @@ table {
     background-color: #f0f0f0;
 }
 
+.align-right {
+    display: grid;
+    align-items: center;
+    justify-items: right;
+}
+
 th {
     background: linear-gradient(0deg, #eaeaea, white);
     text-align: left;
@@ -180,3 +191,77 @@ footer {
     background-color: gray;
 }
 
+/* popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    visibility: hidden;
+    opacity: 0;
+}
+
+.popup-overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup {
+    margin: 30vh auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    width: 50%;
+    position: relative;
+    text-align: center;
+}
+
+.close-popup:link, .close-popup:visited {
+    margin-bottom: 30px;
+    color: black;
+    background-color: var(--accent);
+}
+
+.grid-3cols {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 2fr;
+    grid-gap: 10px;
+    grid-auto-rows: minmax(30px, auto);
+    align-items: center;
+    justify-items: stretch;
+}
+
+.center-vertical {
+    background-color: red;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.col1 {
+    grid-column: 1;
+}
+
+.col2 {
+    grid-column: 2;
+}
+
+.col3 {
+    grid-column: 3;
+}
+
+.row1 {
+    grid-row: 1;
+}
+
+.row2 {
+    grid-row: 2;
+}
+
+.center-content {
+    left: 0;
+    right: 0;
+}
