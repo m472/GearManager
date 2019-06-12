@@ -188,8 +188,15 @@ footer {
     right: 0;
     bottom: 0;
     height: 5%;
+    padding: 0 20px;
     background-color: gray;
+    color: white;
 }
+
+footer > div > small > a:visited, footer > div > small > a:link {
+    color: white;
+}
+
 
 /* popup */
 .popup-overlay {
@@ -234,7 +241,6 @@ footer {
 }
 
 .center-vertical {
-    background-color: red;
     position: absolute;
     top: 50%;
     -ms-transform: translateY(-50%);

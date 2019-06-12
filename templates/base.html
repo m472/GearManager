@@ -37,6 +37,15 @@
     </main>
 
     <footer>
+        <div class="center-vertical">
+            <small>
+            {% if user.is_authenticated %}
+            Eingeloggt als: {{user}}
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+            </small>
+        </div>
     </footer>
 </body>
 </html>
