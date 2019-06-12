@@ -38,7 +38,8 @@
     <form action="{% url 'createItem' %}" id="editForm">
         <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
     </form>
-    <form action="addToPersonalItems" name="addToPersonal" method="post">
+    <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" id="addToPersonal" method="post">
+        {% csrf_token %}
         <button type="submit" class="btn flex-child">Zu meinen Gegenständen hinzufügen</button>
     </form>
 </div>

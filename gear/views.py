@@ -133,6 +133,17 @@ class PackingListDetailView(LoginRequiredMixin, DetailView):
         return context
 
 @login_required
+def addItemToPersonal(request):
+
+    print(request.POST)
+
+    for item_id in request.POST.getlist("addItem"):
+        item = GearItem.objects.get(pk = item_id)
+        GearOwnership(owner = request.user, ownedItem = item).save()
+    
+    return redirect('listPersonalItems')
+
+@login_required
 def savePackingListPacked(request):
     list_id = request.POST.get("listId", None)
     if list_id is None:

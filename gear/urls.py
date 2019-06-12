@@ -12,6 +12,7 @@ urlpatterns = [
     path('items/listPublic', views.GearItemListPublic.as_view(), name = 'listPublicItems'),
     path('items/listPersonal', views.GearItemListPersonal.as_view(), name = 'listPersonalItems'),
     path('items/showByCategory/<int:category_id>&<bool:is_public>', views.showByCategory, name = 'showByCategory'),
+    path('items/addToPersonal', views.addItemToPersonal, name = 'addItemToPersonal'),
     path('lists/list', views.PackingListListView.as_view(), name = 'listLists'),
     path('lists/create', views.PackingListCreateView.as_view(), name = 'createList'),
     path('lists/edit/<int:pk>', views.PackingListUpdateView.as_view(), name = 'editPackingList'),
