@@ -22,8 +22,8 @@
         <th>Name</th>
         <th>Hersteller</th>
         <th class="least-important-col">Kategorie</th>
-        <th class="less-important-col">min. Gewicht [g]</th>
-        <th class="less-important-col">max. Gewicht [g]</th>
+        <th class="less-important-col">min. Gewicht</th>
+        <th class="less-important-col">max. Gewicht</th>
         <th>Auswahl</th>
     </tr>
     {% for it in gearitem_list %}
@@ -31,8 +31,8 @@
             <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
             <td>{{it.manufacturer}}</td>
             <td class="least-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=True %}</td>
-            <td class="less-important-col">{{it.minWeight}}</td>
-            <td class="less-important-col">{% firstof it.maxWeight it.minWeight %}</td>
+            <td class="less-important-col">{{it.minWeight}}&#x202F;g</td>
+            <td class="less-important-col">{% firstof it.maxWeight it.minWeight %}&#x202F;g</td>
             <td class="narrow-col">
                 <input type="checkbox" name="addItem" value="{{it.id}}" id="{{it.name}}" form="addToPersonal" onchange="grayOutIfNoneSelected(this, 'addToPersonalButton')"></input>
             </td>
