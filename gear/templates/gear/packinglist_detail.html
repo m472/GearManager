@@ -12,8 +12,7 @@
 {% block heading %}{{packinglist.name}}{% endblock %}
 
 {% block content %}
-
-<div class="flex">
+<div class="flex margin-top-bottom">
     <form action="{% url 'editPackingList' packinglist.id %}">
         <button type="submit" class="btn flex-child">Bearbeiten</button>
     </form>
@@ -29,7 +28,7 @@
     </form>
 </div>
 <div>
-<table>
+<table class="packinglist-items-table">
     <thead>
         <tr>
             <th>Eingepackt</th>
@@ -37,14 +36,14 @@
             <th>Bezeichnung</th>
             <th class="least-important-col">Hersteller</th>
             <th class="least-important-col">Modul</th>
-            <th class="less-important-col">Gewicht min [g]</th>
-            <th class="less-important-col">Gewicht max [g]</th>
-            <th></th>
+            <th class="less-important-col">Gewicht min</th>
+            <th class="less-important-col">Gewicht max</th>
+            <th class="narrow-col"></th>
         </tr>
     </thead>
     <tbody>
         {% for rel in relations %}
-        <tr class="packinglist-items-table {% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
+        <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
                 <td>
                     <input type="checkbox" form="savePacked" name="isPacked" value="{{rel.id}}" {% if rel.isPacked %}checked{% endif %} onclick="savePackedFunction()"/>
                 </td>
@@ -58,9 +57,9 @@
                 <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
                 <td class="least-important-col">{{rel.item.manufacturer}}</td>
                 <td class="least-important-col">{{rel.addedByGroup|default_if_none:""}}</td>
-                <td class="less-important-col">{{rel.item.minWeight|multiplyBy:rel.count}}</td>
-                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}</td>
-                <td>
+                <td class="less-important-col">{{rel.item.minWeight|multiplyBy:rel.count}}&#x202F;g</td>
+                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}&#x202F;g</td>
+                <td class="narrow-col">
                     <form action="{% url 'removeItem' packinglist.id %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="relationId" value="{{rel.id}}"/>
@@ -74,7 +73,7 @@
 </div>
 
 <div class="add-to-packing-list">
-    <form action="{% url 'addItem' packinglist.id %}" class="form-inline well" method="post">
+    <form action="{% url 'addItem' packinglist.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <select name="itemId" id="itemId" class="form-control">
@@ -85,7 +84,7 @@
             <button class="btn">Gegenstand hinzufügen</button>
         </div>
     </form>
-    <form action="{% url 'addGroup' packinglist.id %}" class="form-inline well" method="post">
+    <form action="{% url 'addGroup' packinglist.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <select name="groupId" id="groupId" class="form-control">
@@ -97,23 +96,5 @@
         </div>
     </form>
 </div>
-
-<table>
-    <tr>
-        <th></th>
-        <th>Aktuell</th>
-        <th>Gesamt</th>
-    </tr>
-    <tr class="table-zebra-dark">
-        <td>Minimales Gewicht:</td>
-        <td>{{weights.currentMinWeight}}&#x202F;g</td>
-        <td>{{weights.totalMinWeight}}&#x202F;g</td>
-    </tr>
-    <tr class="table-zebra-bright">
-        <td>Maximales Gewicht:</td>
-        <td>{{weights.currentMaxWeight}}&#x202F;g</td>
-        <td>{{weights.totalMaxWeight}}&#x202F;g</td>
-    </tr>
-</table>
 {% endblock %}
 

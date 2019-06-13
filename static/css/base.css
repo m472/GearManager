@@ -137,6 +137,11 @@ select {
     color: black;
 }
 
+.margin-top-bottom {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 /* flex */
 .flex {
     display: -webkit-box;
@@ -155,12 +160,6 @@ select {
 }
 
 /* table style */
-
-table {
-    display: block;
-    float: none;
-}
-
 .table-zebra-bright {
     background-color: white;
 }
@@ -203,17 +202,22 @@ footer > div > small > a:visited, footer > div > small > a:link {
 }
 
 .add-to-packing-list {
+    table-layout: initial;
     box-sizing: border-box;
     margin-top: 20px;
     margin-bottom: 20px;
+    font-size: 0;
 }
 
 .add-to-packing-list select {
     width: 60%;
+    margin: 5px 0;
 }
 
 .add-to-packing-list button {
-    width: 30%;
+    width: calc(40% - 4px);
+    margin: 5px 0;
+    margin-left: 4px;
 }
 
 @media screen and (max-width: 600px) {
@@ -308,12 +312,19 @@ footer > div > small > a:visited, footer > div > small > a:link {
 }
 
 .packinglist-items-table {
+    table-layout: initial;
     width: 100%;
+    border-collapse: collapse;
 }
 
 .packinglist-item-count {
     width: 3em;
     padding: 3px;
+}
+
+.narrow-col {
+    width: 2em;
+    text-align: center;
 }
 
 @media screen and (max-width: 800px) {
@@ -326,6 +337,14 @@ footer > div > small > a:visited, footer > div > small > a:link {
     .less-important-col {
         display: none;
     }
+}
+
+.weight-table {
+    width: 100%;
+}
+
+.weight-table td {
+    width: 20%;
 }
 
 /* popup */
