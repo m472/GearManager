@@ -45,7 +45,7 @@
     </form>
     <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn flex-child" id="addToPersonalButton">Zu meinen Gegenständen hinzufügen</button>
+        <button type="submit" class="btn btn-grayout" id="addToPersonalButton" disabled>Zu meinen Gegenständen hinzufügen</button>
     </form>
 </div>
 {% endblock %}
