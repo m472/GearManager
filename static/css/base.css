@@ -404,6 +404,7 @@ footer > div > small > a:visited, footer > div > small > a:link {
 
 .ugrid-3cols *, .ugrid-2cols * {
     width: 100%;
+    height: 100%;
 }
 
 .ugrid-2cols {
