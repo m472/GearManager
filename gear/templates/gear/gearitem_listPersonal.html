@@ -25,7 +25,6 @@
         <th>Kategorie</th>
         <th>min. Gewicht [g]</th>
         <th>max. Gewicht [g]</th>
-        <th>Öffentlich</th>
         <th>Auswahl</th>
     </tr>
     {% for it in gearitem_list %}
@@ -35,9 +34,6 @@
             <td>{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=False %}</td>
             <td>{{it.minWeight}}</td>
             <td>{% firstof it.maxWeight it.minWeight %}</td>
-            {% if it.isPublic %}
-                <td>&#x1f310;</td>
-            {% endif %}
             <td>
                 <input type="checkbox" form="addToListOrGroup" name="itemIds" id="{{it.name}}" value="{{it.id}}" onchange="grayOutIfNoneSelected(this, 'addToListOrGroupButton')"></input>
             </td>
