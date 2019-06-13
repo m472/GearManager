@@ -11,6 +11,11 @@
 </h1>
 {% endblock %}
 
+{% block script %}
+{% load static %}
+<script src="{% static 'gear/grayout.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <table>
     <tr>
@@ -28,8 +33,8 @@
             <td class="least-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=True %}</td>
             <td class="less-important-col">{{it.minWeight}}</td>
             <td class="less-important-col">{% firstof it.maxWeight it.minWeight %}</td>
-            <td>
-                <input type="checkbox" name="addItem" value="{{it.id}}" id="{{it.name}}" form="addToPersonal"></input>
+            <td class="narrow-col">
+                <input type="checkbox" name="addItem" value="{{it.id}}" id="{{it.name}}" form="addToPersonal" onchange="grayOutIfNoneSelected(this, 'addToPersonalButton')"></input>
             </td>
         </tr>
     {% endfor %}
@@ -38,9 +43,9 @@
     <form action="{% url 'createItem' %}" id="editForm">
         <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
     </form>
-    <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" id="addToPersonal" method="post">
+    <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn flex-child">Zu meinen Gegenständen hinzufügen</button>
+        <button type="submit" class="btn btn-grayout flex-child" id="addToPersonalButton">Zu meinen Gegenständen hinzufügen</button>
     </form>
 </div>
 {% endblock %}

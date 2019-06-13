@@ -34,7 +34,7 @@
             <td class="less-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=False %}</td>
             <td class="least-important-col">{{it.minWeight}}</td>
             <td class="least-important-col">{% firstof it.maxWeight it.minWeight %}</td>
-            <td>
+            <td class="narrow-col">
                 <input type="checkbox" form="addToListOrGroup" name="itemIds" id="{{it.name}}" value="{{it.id}}" onchange="grayOutIfNoneSelected(this, 'addToListOrGroupButton')"></input>
             </td>
         </tr>
