@@ -197,6 +197,10 @@ footer {
     color: white;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 footer > div > small > a:visited, footer > div > small > a:link {
     color: white;
 }

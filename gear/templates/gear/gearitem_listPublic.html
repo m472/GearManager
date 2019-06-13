@@ -27,7 +27,7 @@
         <th>Auswahl</th>
     </tr>
     {% for it in gearitem_list %}
-        <tr>
+    <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
             <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
             <td>{{it.manufacturer}}</td>
             <td class="least-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=True %}</td>
