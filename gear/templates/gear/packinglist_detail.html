@@ -35,31 +35,31 @@
             <th>Eingepackt</th>
             <th>Anzahl</th>
             <th>Bezeichnung</th>
-            <th>Hersteller</th>
-            <th>Modul</th>
-            <th>Gewicht min [g]</th>
-            <th>Gewicht max [g]</th>
+            <th class="least-important-col">Hersteller</th>
+            <th class="least-important-col">Modul</th>
+            <th class="less-important-col">Gewicht min [g]</th>
+            <th class="less-important-col">Gewicht max [g]</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         {% for rel in relations %}
-        <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
+        <tr class="packinglist-items-table {% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
                 <td>
                     <input type="checkbox" form="savePacked" name="isPacked" value="{{rel.id}}" {% if rel.isPacked %}checked{% endif %} onclick="savePackedFunction()"/>
                 </td>
                 <td>
                     <form action="{% url 'saveCardinality' packinglist.id %}" name="saveCardinality{{rel.id}}" method="post">
                         {% csrf_token %}
-                        <input type="number" id="count{{rel.id}}" name="count" onchange="saveCardinality(this)" value="{{rel.count}}" class="form-input cardinality-input">
+                        <input type="number" id="count{{rel.id}}" name="count" onchange="saveCardinality(this)" value="{{rel.count}}" class="packinglist-item-count">
                         <input type="hidden" name="relationId" value="{{rel.id}}">
                     </form>
                 </td>
                 <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
-                <td>{{rel.item.manufacturer}}</td>
-                <td>{{rel.addedByGroup|default_if_none:""}}</td>
-                <td>{{rel.item.minWeight|multiplyBy:rel.count}}</td>
-                <td>{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}</td>
+                <td class="least-important-col">{{rel.item.manufacturer}}</td>
+                <td class="least-important-col">{{rel.addedByGroup|default_if_none:""}}</td>
+                <td class="less-important-col">{{rel.item.minWeight|multiplyBy:rel.count}}</td>
+                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}</td>
                 <td>
                     <form action="{% url 'removeItem' packinglist.id %}" method="POST">
                         {% csrf_token %}
@@ -71,6 +71,31 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
+
+<div class="add-to-packing-list">
+    <form action="{% url 'addItem' packinglist.id %}" class="form-inline well" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <select name="itemId" id="itemId" class="form-control">
+                {% for it in possibleItems %}
+                <option value="{{it.id}}">{{it.name}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn">Gegenstand hinzufügen</button>
+        </div>
+    </form>
+    <form action="{% url 'addGroup' packinglist.id %}" class="form-inline well" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <select name="groupId" id="groupId" class="form-control">
+                {% for group in groups %}
+                <option value="{{group.id}}">{{group.name}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn">Gruppe hinzufügen</button>
+        </div>
+    </form>
 </div>
 
 <table>
@@ -90,28 +115,5 @@
         <td>{{weights.totalMaxWeight}}&#x202F;g</td>
     </tr>
 </table>
-
-<form action="{% url 'addItem' packinglist.id %}" class="form-inline well" method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        <select name="itemId" id="itemId" class="form-control">
-            {% for it in possibleItems %}
-            <option value="{{it.id}}">{{it.name}}</option>
-            {% endfor %}
-        </select>
-        <button class="btn">Hinzufügen</button>
-    </div>
-</form>
-<form action="{% url 'addGroup' packinglist.id %}" class="form-inline well" method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        <select name="groupId" id="groupId" class="form-control">
-            {% for group in groups %}
-            <option value="{{group.id}}">{{group.name}}</option>
-            {% endfor %}
-        </select>
-        <button class="btn">Hinzufügen</button>
-    </div>
-</form>
 {% endblock %}
 

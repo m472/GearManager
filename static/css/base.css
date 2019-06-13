@@ -63,6 +63,11 @@ nav li.dropdown {
     display: block;
 }
 
+select {
+    padding: 0.35em;
+    border-radius: 5px;
+}
+
 .block-link:link, .block-link:visited, .inline-block-link:link, .inline-block-link:visited, .item-link:link, .item-link:visited {
     display: inline-block;
     border-radius: 8px;
@@ -197,6 +202,31 @@ footer > div > small > a:visited, footer > div > small > a:link {
     color: white;
 }
 
+.add-to-packing-list {
+    box-sizing: border-box;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.add-to-packing-list select {
+    width: 60%;
+}
+
+.add-to-packing-list button {
+    width: 30%;
+}
+
+@media screen and (max-width: 600px) {
+    .add-to-packing-list select, .add-to-packing-list button {
+        width: 100%;
+        margin: 2px 0;
+    }
+
+    .add-to-packing-list button {
+        margin-bottom: 20px;
+    }
+}
+
 /* generic form */
 .generic-form-wrapper * {
     box-sizing: border-box;
@@ -274,6 +304,27 @@ footer > div > small > a:visited, footer > div > small > a:link {
 @media screen and (max-width: 600px) {
     .detail-table span:first-child, .detail-table span:nth-child(2) {
         width: 100%;
+    }
+}
+
+.packinglist-items-table {
+    width: 100%;
+}
+
+.packinglist-item-count {
+    width: 3em;
+    padding: 3px;
+}
+
+@media screen and (max-width: 800px) {
+    .least-important-col{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .less-important-col {
+        display: none;
     }
 }
 
