@@ -20,8 +20,10 @@ Neue Packliste erstellen
 
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Speichern</button>
+    <div class="generic-form-wrapper">
+        {{ form.as_p }}
+        <button type="submit" class="btn">Speichern</button>
+    </div>
 </form>
 
 {% endblock %}

@@ -197,6 +197,50 @@ footer > div > small > a:visited, footer > div > small > a:link {
     color: white;
 }
 
+/* generic form */
+.generic-form-wrapper * {
+    box-sizing: border-box;
+}
+
+.generic-form-wrapper label {
+    float: left;
+    width: 30%;
+    margin-top: 5px;
+}
+
+.generic-form-wrapper input, .generic-form-wrapper select, .generic-form-wrapper textarea {
+    float: left;
+    width: 65%;
+    resize: vertical;
+    margin-top: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.generic-form-wrapper button {
+    width: 95%;
+    margin: 0;
+    margin-top: 15px;
+}
+
+.generic-form-wrapper input[type=checkbox] {
+    width: auto;
+}
+
+.generic-form-wrapper p {
+    width: 100%;
+    content: "";
+    display: table;
+    clear: both;
+}
+
+@media screen and (max-width: 600px) {
+    .generic-form-wrapper input, .generic-form-wrapper select, .generic-form-wrapper label {
+        width: 100%;
+    }
+}
+
 
 /* popup */
 .popup-overlay {
