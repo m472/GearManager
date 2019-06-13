@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block content %}
-<table>
+<table class="width100percent">
     <tr>
         <th>Name</th>
         <th>Hersteller</th>
@@ -39,13 +39,13 @@
         </tr>
     {% endfor %}
 </table>
-<div class="flex">
+<div class="ugrid-2cols margin-top-bottom">
     <form action="{% url 'createItem' %}" id="editForm">
-        <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
+        <button type="submit" class="btn">Neuen Gegenstand erfassen</button>
     </form>
     <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-grayout flex-child" id="addToPersonalButton">Zu meinen Gegenständen hinzufügen</button>
+        <button type="submit" class="btn flex-child" id="addToPersonalButton">Zu meinen Gegenständen hinzufügen</button>
     </form>
 </div>
 {% endblock %}

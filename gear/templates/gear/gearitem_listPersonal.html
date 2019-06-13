@@ -40,15 +40,15 @@
         </tr>
     {% endfor %}
 </table>
-<div class="flex">
+<div class="ugrid-3cols margin-top-bottom">
     <form action="{% url 'createItem' %}" id="editForm">
-        <button type="submit" class="btn flex-child">Neuen Gegenstand erfassen</button>
+        <button type="submit" class="btn">Neuen Gegenstand erfassen</button>
     </form>
     <form action="{% url 'listPublicItems' %}">
-        <button type="submit" class="btn flex-child">Gegenstand aus Bibliothek hinzufügen</button>
+        <button type="submit" class="btn">Gegenstand aus Bibliothek hinzufügen</button>
     </form>
     <form action="#selectListOrGroup">
-        <button type="submit" class="btn flex-child btn-grayout" id="addToListOrGroupButton" disabled>Zu Packliste oder Gruppe hinzufügen</button>
+        <button type="submit" class="btn btn-grayout" id="addToListOrGroupButton" disabled>Zu Packliste oder Gruppe hinzufügen</button>
     </form>
 </div>
 

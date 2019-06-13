@@ -393,6 +393,31 @@ footer > div > small > a:visited, footer > div > small > a:link {
     justify-items: stretch;
 }
 
+.ugrid-3cols, .ugrid-2cols {
+    box-sizing: border-box;
+    display: grid;
+    grid-gap: 10px;
+    grid-auto-rows: minmax(30px, auto);
+    align-items: stretch;
+    justify-items: stretch;
+}
+
+.ugrid-3cols *, .ugrid-2cols * {
+    width: 100%;
+}
+
+.ugrid-2cols {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.ugrid-3cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.width100percent {
+    width: 100%;
+}
+
 .center-vertical {
     position: absolute;
     top: 50%;
