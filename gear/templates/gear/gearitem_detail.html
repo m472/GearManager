@@ -4,39 +4,40 @@
 {% block heading %}{{item.name}}{% endblock %}
 
 {% block content %}
+<a href="{% url 'editItem' item.id %}" class="inline-block-link accent">Bearbeiten<a>
 
-<a href="{% url 'editItem' item.id %}" class="form-control block-link autowidth">Bearbeiten<a>
-
-<table>
-    <tr>
-        <th>Hersteller:</th>
-        <td>{{item.manufacturer}}</td>
-    </tr>
-    <tr>
-        <th>Kommentar:</th>
-        <td>{{item.comment}}</td>
-    </tr>
-    <tr>
-        <th>Kategorie:</th>
-        <td>{% include "gear/category.html" with cat=item.category linkclass="item-link" separator='>' isPublic=item.isPublic %}</td>
-    </tr>
-    <tr>
-        <th>Kommentar:</th>
-        <td>{{item.comment}}</td>
-    </tr>
-    <tr>
-        <th>Minimalgewicht:</th>
-        <td>{{item.minWeight}}</td>
-    </tr>
-    <tr>
-        <th>Maximalgewicht:</th>
-        <td>{{item.maxWeight}}</td>
-    </tr>
-    <tr>
-        <th>Kaufdatum:</th>
-        <td>{{item.purchaseDate|date}}</td>
-    </tr>
-</table>
+<div class="detail-table">
+    <p>
+        <span class="bold">Hersteller:</span>
+        <span>{{item.manufacturer}}</span>
+    </p>
+    <p>
+        <span>Kommentar:</span>
+        <span>{{item.comment}}</span>
+    </p>
+    <p>
+        <span>Kategorie:</span>
+        <div class="category">
+            {% include "gear/category.html" with cat=item.category linkclass="item-link" separator='>' isPublic=item.isPublic %}
+        </div>
+    </p>
+    <p>
+        <span>Kommentar:</span>
+        <span>{{item.comment}}</span>
+    </p>
+    <p>
+        <span>Minimalgewicht:</span>
+        <span>{{item.minWeight}}&#x202F;g</span>
+    </p>
+    <p>
+        <span>Maximalgewicht:</span>
+        <span>{% firstof item.maxWeight item.minWeight %}&#x202F;g</span>
+    </p>
+    <p>
+        <span>Kaufdatum:</span>
+        <span>{{item.purchaseDate|date}}</span>
+    </p>
+</div>
 
 {% endblock %}
 

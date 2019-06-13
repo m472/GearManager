@@ -127,7 +127,7 @@ nav li.dropdown {
     text-align: center;
 }
 
-.block-link.accent, .accent {
+.block-link.accent, .inline-block-link.accent, .btn.accent, accent {
     background-color: var(--accent);
     color: black;
 }
@@ -241,6 +241,41 @@ footer > div > small > a:visited, footer > div > small > a:link {
     }
 }
 
+.detail-table {
+    box-sizing: border-box;
+}
+
+.detail-table span:first-child {
+    display: inline-block;
+    width: 25%;
+    font-weight: bold;
+    float: left;
+}
+
+.detail-table span:nth-child(2) {
+    display: inline-block;
+    width: 70%;
+    float: left;
+}
+
+.detail-table p {
+    width: 100%;
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.detail-table .category {
+    display: inline-block;
+    padding: 3px;
+    float: left;
+}
+
+@media screen and (max-width: 600px) {
+    .detail-table span:first-child, .detail-table span:nth-child(2) {
+        width: 100%;
+    }
+}
 
 /* popup */
 .popup-overlay {
