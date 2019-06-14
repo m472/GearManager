@@ -24,6 +24,22 @@ class PackingListForm(ModelForm):
         model = PackingList
         fields = ['name', 'comment', 'destination', 'tripStart', 'tripEnd']
 
+class OwnerRequiredMixin:
+    owner_attribute_name = "owner"
+    
+    def get_owner_ids(self, obj):
+        return [getattr(obj, self.owner_attribute_name).id]
+
+    def is_user_authorised(self, obj, user):
+        return user.id in self.get_owner_ids(obj)
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.model.objects.get(pk = kwargs[self.pk_url_kwarg])
+        if self.is_user_authorised(obj, request.user):
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            raise Http404()
+
 class PackingListWeights:
     def __init__(self, relations):
         self.currentMinWeight = 0
@@ -42,9 +58,18 @@ class PackingListWeights:
                 self.currentMinWeight += minW
                 self.currentMaxWeight += maxW
 
-class GearItemDetailView(DetailView):
+class GearItemDetailView(OwnerRequiredMixin, DetailView):
     model = GearItem
     context_object_name = 'item'
+
+    def get_owner_ids(self, obj):
+        return GearOwnership.objects.filter(ownedItem__id = obj.id).values_list('owner', flat=True)
+
+    def is_user_authorised(self, obj, user):
+        if obj.isPublic:
+            return True
+        else:
+            return super().is_user_authorised(obj, user)
 
 class GearItemCreateView(LoginRequiredMixin, CreateView):
     model = GearItem
@@ -101,6 +126,9 @@ def showByCategory(request, category_id, is_public):
 class PackingListListView(LoginRequiredMixin, ListView):
     model = PackingList
 
+    def get_queryset(self):
+        return PackingList.objects.filter(owner__id = self.request.user.id)
+
 class PackingListCreateView(LoginRequiredMixin, CreateView):
     model = PackingList
     form_class = PackingListForm
@@ -125,7 +153,7 @@ class PackingListDeleteView(LoginRequiredMixin, DeleteView):
     model = PackingList
     success_url = reverse_lazy('listLists')
 
-class PackingListDetailView(LoginRequiredMixin, DetailView):
+class PackingListDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
     model = PackingList
 
     def get_context_data(self, **kwargs):
@@ -137,6 +165,9 @@ class PackingListDetailView(LoginRequiredMixin, DetailView):
         context['relations'] = relations
         context['weights'] = PackingListWeights(relations)
         return context
+
+class GearItemGroupListView(LoginRequiredMixin, ListView):
+    model = GearItemGroup
 
 @login_required
 def addItemToListOrGroup(request):
