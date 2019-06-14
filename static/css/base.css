@@ -38,6 +38,21 @@ nav li a, .dropbtn {
     text-decoration: none;
 }
 
+.dropdown > a {
+    padding-right: 35px;
+}
+
+.dropdown > a::after {
+    position: absolute;
+    transform: translateY(-5px);
+    content: "hello";
+    background-color: var(--secondary-bright);
+    font-size: 0;
+    padding: 5px;
+    margin: 10px;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 80%);
+}
+
 nav li a:hover, .dropdown:hover .dropbtn {
     background-color: var(--secondary-dark);
     color: white;
