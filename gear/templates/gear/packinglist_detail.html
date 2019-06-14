@@ -16,8 +16,7 @@
     <form action="{% url 'editPackingList' packinglist.id %}">
         <button type="submit" class="btn flex-child">Bearbeiten</button>
     </form>
-    <form action="{% url 'deletePackingList' packinglist.id %}" method="post">
-        {% csrf_token %}
+    <form action="{% url 'deletePackingList' packinglist.id %}">
         <input type="hidden" value="{{packinglist.id}}"/>
         <button type="submit" class="btn">Löschen</button>
     </form>
