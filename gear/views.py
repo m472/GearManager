@@ -11,7 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.utils import IntegrityError
 
 from .models import GearItem, GearOwnership, Category, Manufacturer, \
-                    PackingList, PackingListGearItemRelation, GearItemGroup, GearItemGroupRelation
+                    PackingList, PackingListGearItemRelation, GearItemGroup, \
+                    GearItemGroupRelation, GearItemGroupOwnership
 
 # Create your views here.
 class GearItemForm(ModelForm):
@@ -23,6 +24,18 @@ class PackingListForm(ModelForm):
     class Meta:
         model = PackingList
         fields = ['name', 'comment', 'destination', 'tripStart', 'tripEnd']
+
+def assert_single_ownership(obj, user, owner_attr_name = 'owner'):
+    if not getattr(obj, owner_attr_name).id == user.id:
+        print("assert_single_ownership check failed")
+        raise Http404
+
+def assert_multiple_ownership(obj, user, relation_model, owned_object_key_name, owner_key_name = 'owner'):
+    relations = relation_model.objects.filter(**{ owned_object_key_name : obj })
+    user_ids = relations.values_list(owner_key_name, flat=True)
+    if not user.id in user_ids:
+        print("assert_multiple_ownership check failed")
+        raise Http404
 
 class OwnerRequiredMixin:
     owner_attribute_name = "owner"
@@ -38,6 +51,7 @@ class OwnerRequiredMixin:
         if self.is_user_authorised(obj, request.user):
             return super().dispatch(request, *args, **kwargs)
         else:
+            print("OwnerRequiredMixin ownership check failed")
             raise Http404()
 
 class PackingListWeights:
@@ -181,18 +195,23 @@ class GearItemGroupListView(LoginRequiredMixin, ListView):
 @login_required
 def addItemToListOrGroup(request):
     selectedItemIds = request.POST.getlist("itemIds")
-    print(request.POST)
 
     if request.POST.get('addToList'):
         packinglist = PackingList.objects.get(pk = request.POST.get('packinglist'))
+        assert_single_ownership(packinglist, request.user)
+
         for item_id in selectedItemIds:
             item = GearItem.objects.get(pk = item_id)
+            assert_multiple_ownership(item, request.user, GearOwnership, 'ownedItem')
             PackingListGearItemRelation(packinglist = packinglist, item = item).save()
 
     if request.POST.get('addToGroup'):
         group = GearItemGroup.objects.get(pk = request.POST.get('group'))
+        assert_multiple_ownership(group, request.user, GearItemGroupOwnership, 'ownedGroup')
+
         for item_id in selectedItemIds:
             item = GearItem.objects.get(pk = item_id)
+            assert_multiple_ownership(item, request.user, GearOwnership, 'ownedItem')
             GearItemGroupRelation(group = group, item = item).save()
 
     return redirect('listPersonalItems')
@@ -211,6 +230,9 @@ def savePackingListPacked(request):
     if list_id is None:
         raise Http404("Packliste wurde nicht gefunden")
 
+    packinglist = PackingList.objects.get(pk = list_id)
+    assert_single_ownership(packinglist, request.user)
+
     checked_ids = [int(i) for i in request.POST.getlist("isPacked", [])]
     
     for rel in PackingListGearItemRelation.objects.filter(packinglist_id = list_id):
@@ -225,8 +247,11 @@ def savePackingListPacked(request):
 @login_required
 def addItemToList(request, list_id):
     packing_list = PackingList.objects.get(pk = list_id)
+    assert_single_ownership(packing_list, request.user)
+
     item_id = request.POST.get("itemId", "")
     item = GearItem.objects.get(pk = item_id)
+    assert_multiple_ownership(item, request.user, GearOwnership, 'ownedItem')
 
     PackingListGearItemRelation(packinglist = packing_list, item = item).save()
 
@@ -235,8 +260,10 @@ def addItemToList(request, list_id):
 @login_required
 def addGroupToList(request, list_id):
     packing_list = PackingList.objects.get(pk = list_id)
+    assert_single_ownership(packing_list, request.user)
     group_id = request.POST.get("groupId", "")
     group = GearItemGroup.objects.get(pk = group_id)
+    assert_single_ownership(group, request.user)
 
     for relation in GearItemGroupRelation.objects.filter(group__id = group_id):
         try:
@@ -250,6 +277,7 @@ def addGroupToList(request, list_id):
 def removeItemFromList(request, list_id):
     rel_id = request.POST.get('relationId', '')
     relation = PackingListGearItemRelation.objects.get(pk = rel_id)
+    assert_single_ownership(relation.packinglist, request.user)
     relation.delete()
 
     return redirect('showPackingList', list_id)
@@ -258,6 +286,7 @@ def removeItemFromList(request, list_id):
 def saveCardinality(request, list_id):
     rel_id = request.POST.get('relationId', '')
     relation = PackingListGearItemRelation.objects.get(pk = rel_id)
+    assert_single_ownership(relation.packinglist, request.user)
     count = request.POST.get('count', '')
     relation.count = count
     relation.save()
