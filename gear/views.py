@@ -84,12 +84,21 @@ class GearItemCreateView(LoginRequiredMixin, CreateView):
 
         return redirect(self.get_success_url())
 
-class GearItemUpdateView(LoginRequiredMixin, UpdateView):
+class GearItemUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = GearItem
     form_class = GearItemForm
 
     def get_success_url(self):
         return reverse_lazy('showItem', args=(self.object.id,))
+
+    def get_owner_ids(self, obj):
+        return GearOwnership.objects.filter(ownedItem__id = obj.id).values_list('owner', flat=True)
+
+    def is_user_authorised(self, obj, user):
+        if obj.isPublic:
+            return True
+        else:
+            return super().is_user_authorised(obj, user)
 
 class GearItemListPublic(ListView):
     model = GearItem
@@ -142,14 +151,14 @@ class PackingListCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('showPackingList', args=(self.object.id,))
 
-class PackingListUpdateView(LoginRequiredMixin, UpdateView):
+class PackingListUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = PackingList
     form_class = PackingListForm
     
     def get_success_url(self):
         return reverse_lazy('showPackingList', args=(self.object.id,))
 
-class PackingListDeleteView(LoginRequiredMixin, DeleteView):
+class PackingListDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
     model = PackingList
     success_url = reverse_lazy('listLists')
 
