@@ -27,6 +27,7 @@
                 </div>
             </li>
             <li><a href="{% url 'listLists' %}">Packlisten</a></li>
+            <li><a href="{% url 'listGroups' %}">Module</a></li>
             {% if user.is_authenticated %}
             <li><a href={% url 'logout' %}>Logout</a>
             {% else %}

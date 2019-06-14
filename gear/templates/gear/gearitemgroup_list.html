@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Module{% endblock %}
+{% block heading %}Module{% endblock %}
+
+{% block content %}
+<ul class="list-group">
+    {% for it in gearitemgroup_list %}
+    <li class="packinglist-list-item"><a href="{% url 'showGroup' it.id %}" class="block-link">{{it.name}}</a></li>
+    {% endfor %}
+</ul>
+<a class="accent block-link packinglist-new" href="{% url 'createGroup' %}">Neues Modul erstellen</a>
+
+{% endblock %}

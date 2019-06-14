@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{gearitemgroup.name}}
+{% endblock %}
+
+{% block heading %}{{gearitemgroup.name}}{% endblock %}
+
+{% block content %}
+<div class="flex margin-top-bottom">
+    <form action="{% url 'editGroup' gearitemgroup.id %}">
+        <button type="submit" class="btn flex-child">Bearbeiten</button>
+    </form>
+    <form action="{% url 'deleteGroup' gearitemgroup.id %}">
+        <input type="hidden" value="{{group.id}}"/>
+        <button type="submit" class="btn">Löschen</button>
+    </form>
+</div>
+<div>
+<table class="packinglist-items-table">
+    <thead>
+        <tr>
+            <th>Bezeichnung</th>
+            <th class="least-important-col">Hersteller</th>
+            <th class="less-important-col">Gewicht min</th>
+            <th class="less-important-col">Gewicht max</th>
+            <th class="narrow-col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rel in relations %}
+        <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
+                <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
+                <td class="least-important-col">{{rel.item.manufacturer}}</td>
+                <td class="less-important-col">{{rel.item.minWeight}}&#x202F;g</td>
+                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight}}&#x202F;g</td>
+                <td class="narrow-col">
+                    <form action="{% url 'removeItemFromGroup' gearitemgroup.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="relationId" value="{{rel.id}}"/>
+                        <input type="submit" value="x" class="btn btn-small"/>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<div class="add-to-packing-list">
+    <form action="{% url 'addItem' gearitemgroup.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <select name="itemId" id="itemId" class="form-control">
+                {% for it in possibleItems %}
+                <option value="{{it.id}}">{{it.name}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn">Gegenstand hinzufügen</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

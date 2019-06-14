@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Modul {{gearitemgroup.name}} löschen?{% endblock %}
+{% block heading %}Modul {{gearitemgroup.name}} löschen?{% endblock %}
+
+{% block content %}
+<form action="{% url 'deleteGroup' gearitemgroup.id %}" method="post">
+    {% csrf_token %}
+    <div class="generic-form-wrapper">
+        <span>Möchten Sie das Modul "{{gearitemgroup.name}}" wirklich unwiederruflich löschen?</span>
+        <button type="submit" class="btn">Löschen</button>
+    </div>
+</form>
+<form action="{% url 'showGroup' gearitemgroup.id %}">
+    <div class="generic-form-wrapper">
+        <button type="submit" class="btn accent">Abbrechen</button>
+    </div>
+</form>
+
+{% endblock %}

@@ -24,4 +24,10 @@ urlpatterns = [
     path('lists/addGroup/<int:list_id>', views.addGroupToList, name = 'addGroup'),
     path('lists/removeItem/<int:list_id>', views.removeItemFromList, name = 'removeItem'),
     path('lists/saveCardinality/<int:list_id>', views.saveCardinality, name = 'saveCardinality'),
+    path('groups/list', views.GearItemGroupListView.as_view(), name = 'listGroups'),
+    path('groups/show/<int:pk>', views.GearItemGroupDetailView.as_view(), name = 'showGroup'),
+    path('groups/create', views.GearItemGroupCreateView.as_view(), name = 'createGroup'),
+    path('groups/removeItem/<int:pk>', views.removeItemFromGroup, name = 'removeItemFromGroup'),
+    path('groups/edit/<int:pk>', views.GearItemGroupUpdateView.as_view(), name = 'editGroup'),
+    path('groups/delete/<int:pk>', views.GearItemGroupDeleteView.as_view(), name = 'deleteGroup'),
 ]

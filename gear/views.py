@@ -25,6 +25,11 @@ class PackingListForm(ModelForm):
         model = PackingList
         fields = ['name', 'comment', 'destination', 'tripStart', 'tripEnd']
 
+class GearItemGroupForm(ModelForm):
+    class Meta:
+        model = GearItemGroup
+        fields = ['name']
+
 def assert_single_ownership(obj, user, owner_attr_name = 'owner'):
     if not getattr(obj, owner_attr_name).id == user.id:
         print("assert_single_ownership check failed")
@@ -192,6 +197,42 @@ class PackingListDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
 class GearItemGroupListView(LoginRequiredMixin, ListView):
     model = GearItemGroup
 
+    def get_queryset(self):
+        return GearItemGroup.objects.filter(gearitemgroupownership__owner_id = self.request.user.id)
+
+class GearItemGroupDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
+    model = GearItemGroup
+
+    def get_owner_ids(self, obj):
+        return GearItemGroupOwnership.objects.filter(ownedGroup__id = obj.id).values_list('owner', flat=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['possibleItems'] = GearItem.objects.filter(gearownership__owner_id = self.request.user.id) \
+                                                   .exclude(gearitemgrouprelation__group_id = self.object.id)
+        context['relations'] = GearItemGroupRelation.objects.filter(group__id = self.object.id)
+        return context
+
+class GearItemGroupCreateView(LoginRequiredMixin, OwnerRequiredMixin, CreateView):
+    model = GearItemGroup
+
+class GearItemGroupUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
+    model = GearItemGroup
+    form_class = GearItemGroupForm
+
+    def get_owner_ids(self, obj):
+        return GearItemGroupOwnership.objects.filter(ownedGroup__id = obj.id).values_list('owner', flat=True)
+    
+    def get_success_url(self):
+        return reverse_lazy('showGroup', args=(self.object.id,))
+    
+class GearItemGroupDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
+    model = GearItemGroup
+    success_url = reverse_lazy('listGroups')
+
+    def get_owner_ids(self, obj):
+        return GearItemGroupOwnership.objects.filter(ownedGroup__id = obj.id).values_list('owner', flat=True)
+
 @login_required
 def addItemToListOrGroup(request):
     selectedItemIds = request.POST.getlist("itemIds")
@@ -293,3 +334,11 @@ def saveCardinality(request, list_id):
 
     return redirect('showPackingList', list_id)
 
+@login_required
+def removeItemFromGroup(request, pk):
+    rel_id = request.POST.get('relationId', '')
+    relation = GearItemGroupRelation.objects.get(pk = rel_id)
+    assert_single_ownership(relation.group, request.user)
+    relation.delete()
+
+    return redirect('showGroup', list_id)

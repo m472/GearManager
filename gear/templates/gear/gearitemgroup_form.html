@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% if packinglist.name %}
-{{packinglist.name}} bearbeiten
+{% if gearitemgroup.name %}
+{{gearitemgroup.name}} bearbeiten
 {% else %}
-Neue Packliste erstellen
+Neues Modul erstellen
 {% endif %}
 {% endblock %}
 
 {% block heading %}
-{% if packinglist.name %}
-{{packinglist.name}} bearbeiten
+{% if gearitemgroup.name %}
+{{gearitemgroup.name}} bearbeiten
 {% else %}
-Neue Packliste erstellen
+Neues Modul erstellen
 {% endif %}
 {% endblock %}
 
