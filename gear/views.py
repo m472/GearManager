@@ -213,8 +213,20 @@ class GearItemGroupDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView
         context['relations'] = GearItemGroupRelation.objects.filter(group__id = self.object.id)
         return context
 
-class GearItemGroupCreateView(LoginRequiredMixin, OwnerRequiredMixin, CreateView):
+class GearItemGroupCreateView(LoginRequiredMixin, CreateView):
     model = GearItemGroup
+    form_class = GearItemGroupForm
+
+    def get_success_url(self):
+        return reverse_lazy('showGroup', args=(self.object.id,))
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        ownership = GearItemGroupOwnership(owner = self.request.user, ownedGroup = self.object)
+        ownership.save()
+
+        return redirect(self.get_success_url())
 
 class GearItemGroupUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = GearItemGroup
