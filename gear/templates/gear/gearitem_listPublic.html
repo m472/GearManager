@@ -34,7 +34,7 @@
             <td class="less-important-col">{{it.minWeight}}&#x202F;g</td>
             <td class="less-important-col">{% firstof it.maxWeight it.minWeight %}&#x202F;g</td>
             <td class="narrow-col">
-                <input type="checkbox" name="addItem" value="{{it.id}}" id="{{it.name}}" form="addToPersonal" onchange="grayOutIfNoneSelected(this, 'addToPersonalButton')"></input>
+                <input type="checkbox" name="addItem" id="{{it.id}}" value="{{it.id}}" id="{{it.name}}" form="addToPersonal" onchange="grayOutIfNoneSelected(this, 'addToPersonalButton')"></input>
             </td>
         </tr>
     {% endfor %}
@@ -43,7 +43,7 @@
     <form action="{% url 'createItem' %}" id="editForm">
         <button type="submit" class="btn">Neuen Gegenstand erfassen</button>
     </form>
-    <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" method="post">
+    <form action="{% url 'addItemToPersonal' %}" name="addToPersonal" id="addToPersonal" method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-grayout" id="addToPersonalButton" disabled>Zu meinen Gegenständen hinzufügen</button>
     </form>
