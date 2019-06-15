@@ -19,6 +19,7 @@
 
 {% block content %}
 <table>
+    <thead>
     <tr>
         <th>Name</th>
         <th>Hersteller</th>
@@ -27,18 +28,21 @@
         <th class="least-important-col">max. Gewicht</th>
         <th>Auswahl</th>
     </tr>
-    {% for it in gearitem_list %}
-    <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
-            <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
-            <td>{{it.manufacturer}}</td>
-            <td class="less-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=False %}</td>
-            <td class="least-important-col">{{it.minWeight}}&#x202F;g</td>
-            <td class="least-important-col">{% firstof it.maxWeight it.minWeight %}&#x202F;g</td>
-            <td class="narrow-col">
-                <input type="checkbox" form="addToListOrGroup" name="itemIds" id="{{it.name}}" value="{{it.id}}" onchange="grayOutIfNoneSelected(this, 'addToListOrGroupButton')"></input>
-            </td>
-        </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+        {% for it in gearitem_list %}
+        <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
+                <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
+                <td>{{it.manufacturer}}</td>
+                <td class="less-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=False %}</td>
+                <td class="least-important-col">{{it.minWeight}}&#x202F;g</td>
+                <td class="least-important-col">{% firstof it.maxWeight it.minWeight %}&#x202F;g</td>
+                <td class="narrow-col">
+                    <input type="checkbox" form="addToListOrGroup" name="itemIds" id="{{it.name}}" value="{{it.id}}" onchange="grayOutIfNoneSelected(this, 'addToListOrGroupButton')"></input>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
 <div class="ugrid-3cols margin-top-bottom">
     <form action="{% url 'createItem' %}" id="editForm">

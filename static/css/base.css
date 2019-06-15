@@ -203,9 +203,12 @@ select {
 
 th {
     background: linear-gradient(0deg, #eaeaea, white);
-    text-align: left;
-    margin: 0;
+}
+
+td, th {
     padding: 5px;
+    margin: 0;
+    text-align: left;
 }
 
 main {

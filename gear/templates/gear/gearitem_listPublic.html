@@ -18,26 +18,30 @@
 
 {% block content %}
 <table class="width100percent">
-    <tr>
-        <th>Name</th>
-        <th>Hersteller</th>
-        <th class="least-important-col">Kategorie</th>
-        <th class="less-important-col">min. Gewicht</th>
-        <th class="less-important-col">max. Gewicht</th>
-        <th>Auswahl</th>
-    </tr>
-    {% for it in gearitem_list %}
-    <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
-            <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
-            <td>{{it.manufacturer}}</td>
-            <td class="least-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=True %}</td>
-            <td class="less-important-col">{{it.minWeight}}&#x202F;g</td>
-            <td class="less-important-col">{% firstof it.maxWeight it.minWeight %}&#x202F;g</td>
-            <td class="narrow-col">
-                <input type="checkbox" name="addItem" id="{{it.id}}" value="{{it.id}}" id="{{it.name}}" form="addToPersonal" onchange="grayOutIfNoneSelected(this, 'addToPersonalButton')"></input>
-            </td>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Hersteller</th>
+            <th class="least-important-col">Kategorie</th>
+            <th class="less-important-col">min. Gewicht</th>
+            <th class="less-important-col">max. Gewicht</th>
+            <th>Auswahl</th>
         </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+        {% for it in gearitem_list %}
+        <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
+                <td><a href="{% url 'showItem' it.id %}" class="item-link">{{it.name}}</a></td>
+                <td>{{it.manufacturer}}</td>
+                <td class="least-important-col">{% include "gear/category.html" with cat=it.category linkclass="item-link" separator='>' isPublic=True %}</td>
+                <td class="less-important-col">{{it.minWeight}}&#x202F;g</td>
+                <td class="less-important-col">{% firstof it.maxWeight it.minWeight %}&#x202F;g</td>
+                <td class="narrow-col">
+                    <input type="checkbox" name="addItem" id="{{it.id}}" value="{{it.id}}" id="{{it.name}}" form="addToPersonal" onchange="grayOutIfNoneSelected(this, 'addToPersonalButton')"></input>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
 <div class="ugrid-2cols margin-top-bottom">
     <form action="{% url 'createItem' %}" id="editForm">
