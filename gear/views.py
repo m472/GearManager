@@ -319,7 +319,7 @@ def addGroupToList(request, list_id):
     assert_single_ownership(packing_list, request.user)
     group_id = request.POST.get("groupId", "")
     group = GearItemGroup.objects.get(pk = group_id)
-    assert_single_ownership(group, request.user)
+    assert_multiple_ownership(group, request.user, GearItemGroupOwnership, 'ownedGroup')
 
     for relation in GearItemGroupRelation.objects.filter(group__id = group_id):
         try:
