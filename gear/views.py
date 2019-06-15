@@ -257,6 +257,7 @@ def addItemToListOrGroup(request):
             item = GearItem.objects.get(pk = item_id)
             assert_multiple_ownership(item, request.user, GearOwnership, 'ownedItem')
             PackingListGearItemRelation(packinglist = packinglist, item = item).save()
+        return redirect('showPackingList', args=(packinglist.id,))
 
     if request.POST.get('addToGroup'):
         group = GearItemGroup.objects.get(pk = request.POST.get('group'))
@@ -266,8 +267,10 @@ def addItemToListOrGroup(request):
             item = GearItem.objects.get(pk = item_id)
             assert_multiple_ownership(item, request.user, GearOwnership, 'ownedItem')
             GearItemGroupRelation(group = group, item = item).save()
+        return redirect('showGroup', args=(group.id,))
 
-    return redirect('listPersonalItems')
+    raise Http404
+
 
 @login_required
 def addItemToPersonal(request):
