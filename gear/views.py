@@ -345,6 +345,9 @@ def saveCardinality(request, list_id):
     assert_single_ownership(relation.packinglist, request.user)
     count = request.POST.get('count', '')
     relation.count = count
+
+    # validate model before saving
+    relation.full_clean() 
     relation.save()
 
     return redirect('showPackingList', list_id)

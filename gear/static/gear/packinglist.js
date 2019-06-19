@@ -4,6 +4,13 @@ function savePackedFunction() {
 }
 
 function saveCardinality(element) {
-    element.parentElement.submit();
+    count = parseInt(element.value);
+
+    if (count > 0) {
+        element.parentElement.submit();
+    }
+    else {
+        element.value = 1;
+    }
 }
 

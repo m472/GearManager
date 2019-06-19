@@ -49,7 +49,7 @@
                 <td>
                     <form action="{% url 'saveCardinality' packinglist.id %}" name="saveCardinality{{rel.id}}" method="post">
                         {% csrf_token %}
-                        <input type="number" id="count{{rel.id}}" name="count" onchange="saveCardinality(this)" value="{{rel.count}}" class="packinglist-item-count">
+                        <input type="number" id="count{{rel.id}}" name="count" onchange="saveCardinality(this)" value="{{rel.count}}" class="packinglist-item-count" min="1">
                         <input type="hidden" name="relationId" value="{{rel.id}}">
                     </form>
                 </td>
