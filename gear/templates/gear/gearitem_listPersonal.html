@@ -3,6 +3,9 @@
 {% block script %}
 {% load static %}
 <script src="{% static 'gear/grayout.js' %}"></script>
+<script>
+    window.location.href = "?#";
+</script>
 {% endblock %}
 
 {% block title %}Meine Ausrüstungsgegenstände {% if category %}| {% endif %}{{category}}{% endblock %}
