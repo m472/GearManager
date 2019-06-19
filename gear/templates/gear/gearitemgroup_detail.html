@@ -48,7 +48,7 @@
 </div>
 
 <div class="add-to-packing-list">
-    <form action="{% url 'addItem' gearitemgroup.id %}" method="post">
+    <form action="{% url 'addItemToGroup' gearitemgroup.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <select name="itemId" id="itemId" class="form-control">

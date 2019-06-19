@@ -30,4 +30,5 @@ urlpatterns = [
     path('groups/removeItem/<int:pk>', views.removeItemFromGroup, name = 'removeItemFromGroup'),
     path('groups/edit/<int:pk>', views.GearItemGroupUpdateView.as_view(), name = 'editGroup'),
     path('groups/delete/<int:pk>', views.GearItemGroupDeleteView.as_view(), name = 'deleteGroup'),
+    path('groups/addItem/<int:pk>', views.addItemToGroup, name = 'addItemToGroup'),
 ]

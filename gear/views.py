@@ -248,6 +248,7 @@ class GearItemGroupDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView
 @login_required
 def addItemToListOrGroup(request):
     selectedItemIds = request.POST.getlist("itemIds")
+    print("selectedItemIds:", selectedItemIds)
 
     if request.POST.get('addToList'):
         packinglist = PackingList.objects.get(pk = request.POST.get('packinglist'))
@@ -360,3 +361,17 @@ def removeItemFromGroup(request, pk):
     relation.delete()
 
     return redirect('showGroup', list_id)
+
+@login_required
+def addItemToGroup(request, pk):
+    group = GearItemGroup.objects.get(pk = pk)
+    assert_multiple_ownership(group, request.user, GearItemGroupOwnership, 'ownedGroup')
+
+    item_id = request.POST.get("itemId", "")
+    item = GearItem.objects.get(pk = item_id)
+    assert_multiple_ownership(item, request.user, GearOwnership, 'ownedItem')
+
+    GearItemGroupRelation(group = group, item = item).save()
+
+    return redirect('showGroup', pk)
+
