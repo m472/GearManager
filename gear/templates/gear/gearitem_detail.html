@@ -27,11 +27,11 @@
     </p>
     <p>
         <span>Minimalgewicht:</span>
-        <span>{{item.minWeight}}&#x202F;g</span>
+        <span>{{item.minWeight|floatformat}}&#x202F;g</span>
     </p>
     <p>
         <span>Maximalgewicht:</span>
-        <span>{% firstof item.maxWeight item.minWeight %}&#x202F;g</span>
+        <span>{{item.maxWeight|default_if_none:item.minWeight|floatformat}}&#x202F;g</span>
     </p>
     <p>
         <span>Kaufdatum:</span>

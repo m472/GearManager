@@ -56,8 +56,8 @@
                 <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
                 <td class="least-important-col">{{rel.item.manufacturer}}</td>
                 <td class="least-important-col">{{rel.addedByGroup|default_if_none:""}}</td>
-                <td class="less-important-col">{{rel.item.minWeight|multiplyBy:rel.count}}&#x202F;g</td>
-                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count}}&#x202F;g</td>
+                <td class="less-important-col">{{rel.item.minWeight|multiplyBy:rel.count|floatformat}}&#x202F;g</td>
+                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight|multiplyBy:rel.count|floatformat}}&#x202F;g</td>
                 <td class="narrow-col">
                     <form action="{% url 'removeItem' packinglist.id %}" method="POST">
                         {% csrf_token %}

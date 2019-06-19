@@ -32,8 +32,8 @@
         <tr class="{% cycle 'table-zebra-bright' 'table-zebra-dark' %}">
                 <td><a href="{% url 'showItem' rel.item.id %}" class="item-link">{{rel.item.name}}</a></td>
                 <td class="least-important-col">{{rel.item.manufacturer}}</td>
-                <td class="less-important-col">{{rel.item.minWeight}}&#x202F;g</td>
-                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight}}&#x202F;g</td>
+                <td class="less-important-col">{{rel.item.minWeight|floatformat}}&#x202F;g</td>
+                <td class="less-important-col">{{rel.item.maxWeight|default_if_none:rel.item.minWeight|floatformat}}&#x202F;g</td>
                 <td class="narrow-col">
                     <form action="{% url 'removeItemFromGroup' gearitemgroup.id %}" method="POST">
                         {% csrf_token %}
