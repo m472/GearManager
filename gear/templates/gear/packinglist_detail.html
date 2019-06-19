@@ -75,23 +75,23 @@
     <form action="{% url 'addItem' packinglist.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <select name="itemId" id="itemId" class="form-control">
+            <select name="itemId" id="itemId" class="form-control" {% if not possibleItems %}disabled{% endif %}>
                 {% for it in possibleItems %}
                 <option value="{{it.id}}">{{it.name}}</option>
                 {% endfor %}
             </select>
-            <button class="btn">Gegenstand hinzufügen</button>
+            <button class="btn {% if not possibleItems %}btn-grayout{% endif %}" {% if not possibleItems %}disabled{% endif %}>Gegenstand hinzufügen</button>
         </div>
     </form>
     <form action="{% url 'addGroup' packinglist.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <select name="groupId" id="groupId" class="form-control">
+            <select name="groupId" id="groupId" class="form-control" {% if not groups %}disabled{% endif %}>
                 {% for group in groups %}
                 <option value="{{group.id}}">{{group.name}}</option>
                 {% endfor %}
             </select>
-            <button class="btn">Gruppe hinzufügen</button>
+            <button class="btn {% if not groups %}btn-grayout{% endif %}" {% if not groups %}disabled{% endif %}>Gruppe hinzufügen</button>
         </div>
     </form>
 </div>

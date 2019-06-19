@@ -51,12 +51,12 @@
     <form action="{% url 'addItemToGroup' gearitemgroup.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <select name="itemId" id="itemId" class="form-control">
+            <select name="itemId" id="itemId" class="form-control" {% if not possibleItems %}disabled{% endif %}>
                 {% for it in possibleItems %}
                 <option value="{{it.id}}">{{it.name}}</option>
                 {% endfor %}
             </select>
-            <button class="btn">Gegenstand hinzufügen</button>
+            <button class="btn {% if not possibleItems %}btn-grayout{% endif %}" {% if not possibleItems %}disabled{% endif %}>Gegenstand hinzufügen</button>
         </div>
     </form>
 </div>
